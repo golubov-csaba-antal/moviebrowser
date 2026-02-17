@@ -1,5 +1,6 @@
 plugins {
     id("com.android.library")
+    id("com.google.devtools.ksp")
     alias(libs.plugins.kotlin.compose)
 }
 
@@ -43,6 +44,10 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.ui.tooling)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     // Coil
     implementation(libs.coil)

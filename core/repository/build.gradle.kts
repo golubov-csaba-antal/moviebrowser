@@ -1,5 +1,6 @@
 plugins {
     id("com.android.library")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -24,7 +25,10 @@ android {
 
 dependencies {
     implementation(libs.kotlin.coroutines)
-    implementation(libs.dagger)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     implementation(projects.core.data)
     implementation(projects.core.commonUi)

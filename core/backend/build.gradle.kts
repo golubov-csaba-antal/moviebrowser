@@ -1,10 +1,11 @@
 plugins {
     id("com.android.library")
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.zappyware.moviebrowser.network"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 28
@@ -23,7 +24,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.dagger)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter)

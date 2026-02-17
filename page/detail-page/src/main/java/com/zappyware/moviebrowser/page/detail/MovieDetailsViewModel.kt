@@ -3,10 +3,13 @@ package com.zappyware.moviebrowser.page.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zappyware.moviebrowser.repository.IMoviesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MovieDetailsViewModel(
+@HiltViewModel
+class MovieDetailsViewModel @Inject constructor(
     val moviesRepository: IMoviesRepository,
 ) : ViewModel() {
 

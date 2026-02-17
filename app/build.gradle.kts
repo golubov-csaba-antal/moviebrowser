@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.navigation.safeargs)
     id("com.google.devtools.ksp")
 }
 
@@ -40,6 +42,9 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 }
 
@@ -86,14 +91,15 @@ dependencies {
     // Coroutines
     implementation(libs.kotlin.coroutines)
 
-    // DI
-    implementation(libs.dagger)
+    // DI - Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
 
     // Utils
     implementation(libs.gson)
 
-    // Kapt
-    ksp(libs.dagger.compiler)
+    // KSP
+    ksp(libs.hilt.compiler)
     ksp(libs.room.compiler)
 
     implementation(projects.core.data)

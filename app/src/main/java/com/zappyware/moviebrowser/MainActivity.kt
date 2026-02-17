@@ -8,28 +8,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.zappyware.moviebrowser.di.DaggerMainActivityComponent
 import com.zappyware.moviebrowser.page.detail.MovieDetailsScreen
-import com.zappyware.moviebrowser.page.detail.MovieDetailsViewModel
 import com.zappyware.moviebrowser.page.landing.MovieListScreen
-import com.zappyware.moviebrowser.page.landing.MovieListViewModel
-import com.zappyware.moviebrowser.repository.IMoviesRepository
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
-    @Inject
-    lateinit var moviesRepository: IMoviesRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        DaggerMainActivityComponent.factory()
-            .create(applicationContext)
-            .inject(this)
 
         setContent {
             MaterialTheme(
@@ -43,7 +34,7 @@ class MainActivity : AppCompatActivity() {
                 NavHost(navController = navController, startDestination = "list") {
                     composable("list") {
                         MovieListScreen(
-                            viewModel = MovieListViewModel(moviesRepository),
+                            viewModel = hiltViewModel(),
                             onDetailsClicked = {
                                 navController.navigate("details")
                             },
@@ -51,7 +42,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     composable("details") {
                         MovieDetailsScreen(
-                            viewModel = MovieDetailsViewModel(moviesRepository),
+                            viewModel = hiltViewModel(),
                         )
                     }
                 }
