@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fitInside
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -23,11 +24,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.WindowInsetsRulers
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.zappyware.moviebrowser.data.Movie
 import com.zappyware.moviebrowser.network.tmdb.data.coverUrl
 import com.zappyware.moviebrowser.network.tmdb.data.smallCoverUrl
@@ -35,7 +37,6 @@ import com.zappyware.moviebrowser.network.tmdb.data.smallCoverUrl
 @Composable
 fun MovieListScreen(viewModel: MovieListViewModel, onDetailsClicked: (Movie) -> Unit) {
     MovieListScreenUI(viewModel.movies.collectAsState().value) {
-        viewModel.storeMovieForNavigation(it)
         onDetailsClicked(it)
     }
 }
@@ -44,6 +45,7 @@ fun MovieListScreen(viewModel: MovieListViewModel, onDetailsClicked: (Movie) -> 
 fun MovieListScreenUI(movies: List<Movie>, onDetailsClicked: (Movie) -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth()
+            .fitInside(WindowInsetsRulers.SafeDrawing.current)
     ) {
         Text(
             text = "Movie List",

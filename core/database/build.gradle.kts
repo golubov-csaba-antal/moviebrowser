@@ -4,8 +4,8 @@ plugins {
 }
 
 android {
-    namespace = "com.zappyware.moviebrowser.repository"
-    compileSdk = 34
+    namespace = "com.zappyware.moviebrowser.database"
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 28
@@ -24,14 +24,16 @@ android {
 }
 
 dependencies {
-    implementation(libs.kotlin.coroutines)
-
-    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    implementation(libs.room)
+    ksp(libs.room.compiler)
+
     implementation(projects.core.data)
-    implementation(projects.core.database)
-    implementation(projects.core.commonUi)
-    implementation(projects.core.backend)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

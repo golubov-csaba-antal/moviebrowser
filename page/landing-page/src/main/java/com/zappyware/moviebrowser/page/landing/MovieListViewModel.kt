@@ -2,7 +2,6 @@ package com.zappyware.moviebrowser.page.landing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zappyware.moviebrowser.data.Movie
 import com.zappyware.moviebrowser.repository.IMoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -29,9 +28,5 @@ class MovieListViewModel @Inject constructor(
                     moviesRepository.movies.emit(it.data.orEmpty())
                 }
         }
-    }
-
-    fun storeMovieForNavigation(movie: Movie) {
-        moviesRepository.detailsId.value = movie.id
     }
 }
