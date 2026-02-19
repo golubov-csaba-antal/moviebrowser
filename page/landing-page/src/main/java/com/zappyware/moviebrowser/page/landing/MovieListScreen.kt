@@ -1,6 +1,7 @@
 package com.zappyware.moviebrowser.page.landing
 
 import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -84,7 +85,11 @@ fun MovieListScreenUI(
                     shape = RoundedCornerShape(24.dp),
                     shadow = Shadow(
                         radius = 16.dp,
-                        color = Color.DarkGray
+                        color = if(isSystemInDarkTheme()) {
+                            Color.Black
+                        } else {
+                            Color.DarkGray
+                        }
                     ),
                 ),
                 movie = movies.value[pageIndex],

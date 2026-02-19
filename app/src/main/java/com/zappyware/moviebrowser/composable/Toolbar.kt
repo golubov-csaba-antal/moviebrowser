@@ -31,7 +31,8 @@ fun Toolbar(
         ),
         title = {
             Text(
-                text = title, color = Color.Black,
+                text = title,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 18.sp
             )
         },
