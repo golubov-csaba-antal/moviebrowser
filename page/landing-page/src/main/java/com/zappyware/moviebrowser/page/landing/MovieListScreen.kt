@@ -1,16 +1,15 @@
 package com.zappyware.moviebrowser.page.landing
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fitInside
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,18 +53,18 @@ fun MovieListScreenUI(
                 .height(48.dp)
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         )
-        LazyRow(
+
+        val pagerState = rememberPagerState(pageCount = { movies.value.size })
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(16.dp, vertical = 0.dp),
-            state = rememberLazyListState()
-        ) {
-            items(items = movies.value, key = { it.id }) { item ->
-                MovieListItem(
-                    movie = item,
-                    onDetailsClicked,
-                )
-            }
+            pageSize = PageSize.Fixed(208.dp),
+        ) { pageIndex ->
+            MovieListItem(
+                movie = movies.value[pageIndex],
+                onDetailsClicked,
+            )
         }
     }
 }
