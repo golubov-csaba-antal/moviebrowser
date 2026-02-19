@@ -10,11 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.WindowInsetsRulers
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,9 +63,16 @@ fun MovieListScreenUI(
             state = pagerState,
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(16.dp, vertical = 0.dp),
-            pageSize = PageSize.Fixed(208.dp),
+            pageSize = PageSize.Fixed(224.dp),
         ) { pageIndex ->
             MovieListItem(
+                modifier = Modifier.dropShadow(
+                    shape = RoundedCornerShape(24.dp),
+                    shadow = Shadow(
+                        radius = 16.dp,
+                        color = Color.DarkGray
+                    ),
+                ),
                 movie = movies.value[pageIndex],
                 onDetailsClicked,
             )
