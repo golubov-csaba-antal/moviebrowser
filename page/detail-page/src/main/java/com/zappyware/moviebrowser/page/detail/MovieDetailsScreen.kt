@@ -1,108 +1,102 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.zappyware.moviebrowser.page.detail
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fitInside
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.WindowInsetsRulers
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.compose.rememberConstraintsSizeResolver
 import coil3.request.ImageRequest
 import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.page.detail.composable.MovieMeta
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun MovieDetailsScreen(viewModel: MovieDetailsViewModel, movieId: Long) {
-    val rememberMovie = remember { mutableStateOf<Movie?>(null) }
+    val movie = viewModel.movie.collectAsStateWithLifecycle()
+    val isFavoriteState = viewModel.isFavorite.collectAsStateWithLifecycle()
     MovieDetailsScreenUI(
-        rememberMovie.value,
+        movie,
+        isFavoriteState,
         viewModel::onFavoriteClicked,
     )
-    viewModel.getMovieById(movieId) {
-        rememberMovie.value = it
-    }
+    viewModel.getMovieById(movieId)
 }
 
 @Composable
 fun MovieDetailsScreenUI(
-    movie: Movie?,
-    onFavoriteClicked: (Long,Boolean) -> Unit,
+    movie: State<Movie?>,
+    isFavoriteState: State<Boolean>,
+    onFavoriteClicked: (Long, Boolean) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .fitInside(WindowInsetsRulers.SafeDrawing.current)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        if (movie == null) {
-            CircularProgressIndicator(
-                modifier = Modifier.padding(all = 16.dp)
-            )
-        } else {
-            val sizeResolver = rememberConstraintsSizeResolver()
-            val painter = rememberAsyncImagePainter(
-                model = ImageRequest.Builder(LocalPlatformContext.current)
-                    .data(movie.coverUrl)
-                    .size(sizeResolver)
-                    .build(),
-            )
+    val windowInfo = LocalWindowInfo.current
 
-            Image(
-                painter = painter,
-                contentDescription = null,
+    val screenWidth = windowInfo.containerDpSize.width
+    val screenHeight = windowInfo.containerDpSize.height
+
+    BottomSheetScaffold(
+        modifier = Modifier.fillMaxSize()
+            .fitInside(WindowInsetsRulers.SafeDrawing.current)
+            .padding(start = 16.dp, end = 16.dp),
+        sheetSwipeEnabled = true,
+        sheetShape = RoundedCornerShape(
+            topStart = 24.dp,
+            topEnd = 24.dp,
+        ),
+        sheetPeekHeight = screenWidth,
+        sheetContainerColor = MaterialTheme.colorScheme.surface,
+        sheetDragHandle = null,
+        sheetShadowElevation = 40.dp,
+        sheetContent = {
+            MovieMeta(
+                movie = movie,
+                isFavoriteState = isFavoriteState,
                 modifier = Modifier.fillMaxWidth()
-                    .aspectRatio(2f/3f)
-                    .then(sizeResolver),
-                contentScale = ContentScale.FillWidth
+                    .height(screenHeight)
+                    .padding(top = 32.dp, start = 24.dp, end = 24.dp),
+                onFavoriteClicked = onFavoriteClicked
             )
-            Spacer(modifier = Modifier.height(24.dp))
-            Image(
-                painter = if (movie.isFavorite) {
-                    painterResource(id = android.R.drawable.btn_star_big_on)
-                } else {
-                    painterResource(id = android.R.drawable.btn_star_big_off)
-                },
-                contentDescription = null,
-                modifier = Modifier.clickable {
-                    onFavoriteClicked(movie.id, !movie.isFavorite)
-                },
-            )
-            Text(
-                text = movie.title,
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = movie.overview ?: "",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-        }
+        },
+    ) { _ ->
+        val sizeResolver = rememberConstraintsSizeResolver()
+        val painter = rememberAsyncImagePainter(
+            model = ImageRequest.Builder(LocalPlatformContext.current)
+                .data(movie.value?.coverUrl)
+                .size(sizeResolver)
+                .build(),
+        )
+
+        Image(
+            painter = painter,
+            contentDescription = null,
+            modifier = Modifier.fillMaxWidth()
+                .padding(top = 16.dp)
+                .aspectRatio(2f/3f)
+                .clip(RoundedCornerShape(32.dp, 32.dp))
+                .then(sizeResolver),
+            contentScale = ContentScale.FillWidth,
+        )
     }
 }
 
@@ -115,16 +109,20 @@ fun MovieDetailsScreenUI(
 )
 fun MovieDetailsScreenUIPreview() {
     MovieDetailsScreenUI(
-        movie = Movie(
-            id = 123L,
-            title = "Example Movie",
-            genres = "Action, Adventure, Sci-Fi",
-            overview = "This is an overview of the example movie. It's full of action, adventure and sci-fi elements.",
-            smallCoverUrl = "https://image.tmdb.org/t/p/w200/qW4crfED8mpNDadSmMdi7ZDzhXF.jpg",
-            coverUrl = "https://image.tmdb.org/t/p/original/qW4crfED8mpNDadSmMdi7ZDzhXF.jpg",
-            rating = 4.5f,
-            isFavorite = false,
-        ),
-        onFavoriteClicked = { _, _ -> },
-    )
+        movie = MutableStateFlow<Movie?>(
+            Movie(
+                id = 123L,
+                title = "Example Movie",
+                genres = "Action, Adventure, Sci-Fi",
+                overview = "This is an overview of the example movie. It's full of action, adventure and sci-fi elements.",
+                smallCoverUrl = "https://image.tmdb.org/t/p/w200/qW4crfED8mpNDadSmMdi7ZDzhXF.jpg",
+                coverUrl = "https://image.tmdb.org/t/p/original/qW4crfED8mpNDadSmMdi7ZDzhXF.jpg",
+                rating = 4.5f,
+                isFavorite = false,
+            )
+        ).collectAsStateWithLifecycle(),
+        isFavoriteState = MutableStateFlow(
+            true
+        ).collectAsStateWithLifecycle(),
+    ) { _, _ -> }
 }

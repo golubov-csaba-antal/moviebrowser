@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.zappyware.moviebrowser.database.MBDatabase
 import com.zappyware.moviebrowser.database.MBDatabaseImpl
 import com.zappyware.moviebrowser.database.entity.MBConstants
+import com.zappyware.moviebrowser.database.migration.MIGRATE_1_2
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -22,6 +23,7 @@ object MBDatabaseModule {
         @ApplicationContext context: Context
     ): MBDatabaseImpl {
         return Room.databaseBuilder(context, MBDatabaseImpl::class.java, MBConstants.DB_NAME)
+            .addMigrations(MIGRATE_1_2)
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -41,4 +43,8 @@ object DatabaseDaoModule {
     @Reusable
     @Provides
     fun provideMoviesDao(db: MBDatabase) = db.moviesDao()
+
+    @Reusable
+    @Provides
+    fun provideFavoritesDao(db: MBDatabase) = db.favoritesDao()
 }

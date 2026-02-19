@@ -6,6 +6,8 @@ import com.zappyware.moviebrowser.data.Movie
 import com.zappyware.moviebrowser.repository.IMoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -15,18 +17,23 @@ class MovieDetailsViewModel @Inject constructor(
     private val moviesRepository: IMoviesRepository,
 ) : ViewModel() {
 
-    fun getMovieById(movieId: Long, callback: (Movie?) -> Unit) {
+    private val _movie = MutableStateFlow<Movie?>(null)
+    val movie: StateFlow<Movie?> get() = _movie
+
+    private val _isFavorite = MutableStateFlow(false)
+    val isFavorite: StateFlow<Boolean> get() = _isFavorite
+
+    fun getMovieById(movieId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val movie = moviesRepository.getMovieById(movieId)
-            withContext(Dispatchers.Main) {
-                callback.invoke(movie)
-            }
+            _movie.emit(moviesRepository.getMovieById(movieId))
+            _isFavorite.emit(moviesRepository.getIsFavoriteMovieById(movieId))
         }
     }
 
     fun onFavoriteClicked(movieId: Long, isFavorite: Boolean) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             moviesRepository.changeFavorite(movieId, isFavorite)
+            _isFavorite.emit(isFavorite)
         }
     }
 }

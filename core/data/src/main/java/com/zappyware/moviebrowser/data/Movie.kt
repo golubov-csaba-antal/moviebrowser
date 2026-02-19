@@ -8,5 +8,6 @@ data class Movie(
     val smallCoverUrl: String?,
     val coverUrl: String?,
     val rating: Float,
+    @Deprecated("Insert value into FavoritesDao instead")
     var isFavorite: Boolean,
 )

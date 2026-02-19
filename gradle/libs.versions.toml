@@ -12,18 +12,17 @@ composeBom = "2026.02.00"
 composeActivity = "1.12.4"
 composeCompiler = "1.4.6"
 composeViewmodel = "2.10.0"
-composeNavigation = "2.9.7"
-composeMaterial = "1.0.1"
-navigationSafeArgsGradlePlugin = "2.9.7"
 retrofit = "3.0.0"
 retrofitGsonConverter = "3.0.0"
-retrofitRxAdapter = "3.0.0"
 okhttp = "5.3.2"
 coroutines = "1.10.2"
-dagger = "2.59.1"
 hilt = "2.59.1"
 hiltExt = "1.3.0"
-navigation = "2.9.7"
+nav3Core = "1.0.1"
+lifecycleViewmodelNav3 = "2.10.0"
+kotlinSerialization = "2.3.10"
+kotlinxSerializationCore = "1.10.0"
+material3AdaptiveNav3 = "1.3.0-alpha08"
 datastore = "1.2.0"
 room = "2.8.4"
 coil = "3.3.0"
@@ -33,7 +32,6 @@ material = "1.13.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationSafeArgsGradlePlugin" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -58,9 +56,11 @@ compose-material = { group = "androidx.compose.material3", name = "material3" }
 coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
-navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" }
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
+androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
+androidx-material3-adaptive-navigation3 = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "material3AdaptiveNav3" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofitGsonConverter" }
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
@@ -71,14 +71,11 @@ okhttp-logger = { group = "com.squareup.okhttp3", name = "logging-interceptor", 
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltExt" }
-dagger = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
-dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-android-library = { id = "com.android.library", version.ref = "agp" }
+jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization"}

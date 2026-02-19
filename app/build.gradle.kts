@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.navigation.safeargs)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
     id("com.google.devtools.ksp")
 }
 
@@ -66,6 +66,7 @@ dependencies {
 
     // Core
     implementation(libs.kotlin)
+    implementation(libs.android.appcompat)
     implementation(libs.androidx.core.ktx)
 
     // Compose
@@ -76,9 +77,11 @@ dependencies {
     implementation(libs.coil.compose)
 
     // Navigation
-    implementation(libs.navigation.fragment)
-    implementation(libs.navigation.ui)
-    implementation(libs.navigation.compose)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.material3.adaptive.navigation3)
+    implementation(libs.kotlinx.serialization.core)
 
     // Data
     implementation(libs.retrofit)

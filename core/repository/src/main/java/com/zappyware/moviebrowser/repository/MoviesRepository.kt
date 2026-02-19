@@ -2,50 +2,51 @@ package com.zappyware.moviebrowser.repository
 
 import com.zappyware.moviebrowser.common.ui.ViewState
 import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.database.dao.FavoritesDao
 import com.zappyware.moviebrowser.database.dao.MoviesDao
+import com.zappyware.moviebrowser.database.entity.toMBFavoriteMovie
 import com.zappyware.moviebrowser.database.entity.toMBMovie
 import com.zappyware.moviebrowser.database.entity.toMovie
 import com.zappyware.moviebrowser.network.INetworkService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.toList
 import javax.inject.Inject
 
 class MoviesRepository @Inject constructor(
     private val service: INetworkService,
     private val moviesDao: MoviesDao,
+    private val favoritesDao: FavoritesDao,
 ): IMoviesRepository {
-    private val moviesXIsFavorite: MutableMap<Long,Boolean> = mutableMapOf()
-
-    override val movies: MutableStateFlow<List<Movie>> = MutableStateFlow(emptyList())
 
     override suspend fun fetchMovies(): Flow<ViewState<List<Movie>>> =
         flow {
             emit(ViewState.loading<List<Movie>>())
             val movies = service.getTrendingMovies()
-                .onEach {
-                    it.isFavorite = moviesXIsFavorite[it.id] ?: false
-                }.also {
-                    moviesDao.clearMovies()
-                    moviesDao.saveMovies(it.map { it.toMBMovie() })
-                }
+            movies.run {
+                moviesDao.clearMovies()
+                moviesDao.saveMovies(map { it.toMBMovie() })
+            }//moviesDao.getMovies().map { it.toMovie() }
+            movies.forEach {
+                it.isFavorite = favoritesDao.isFavorites(it.id) != 0
+            }
             emit(ViewState.success(movies))
         }.flowOn(Dispatchers.IO)
 
     override suspend fun changeFavorite(id: Long, isFavorite: Boolean) {
-        moviesXIsFavorite[id] = isFavorite
-        val index = movies.value.indexOfFirst { it.id == id }
-        movies.value.toMutableList().also {
-            it[index] = it[index].copy(isFavorite = isFavorite)
-        }.also {
-            moviesDao.saveMovie(it[index].toMBMovie())
-            movies.emit(it)
+        val isMovieFavoriteEntity = id.toMBFavoriteMovie()
+        if(isFavorite) {
+            favoritesDao.addToFavorites(isMovieFavoriteEntity)
+        } else {
+            favoritesDao.removeFromFavorites(isMovieFavoriteEntity)
         }
     }
 
-    override suspend fun getMovieById(id: Long): Movie? {
-        return moviesDao.getMovieByContentId(id)?.toMovie()
-    }
+    override suspend fun getMovieById(id: Long): Movie? =
+        moviesDao.getMovieByContentId(id)?.toMovie()
+
+    override suspend fun getIsFavoriteMovieById(id: Long): Boolean =
+        favoritesDao.isFavorites(id) != 0
 }

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface MoviesDao {
 
     @Query("SELECT * FROM ${MBConstants.Tables.T_MOVIES}")
-    fun getMovies(): Flow<MBMovie>
+    fun getMovies(): List<MBMovie>
 
     @Query("SELECT * FROM ${MBConstants.Tables.T_MOVIES} WHERE ${MBConstants.Columns.C_ID} = :id")
     fun getMovieByContentId(id: Long): MBMovie?

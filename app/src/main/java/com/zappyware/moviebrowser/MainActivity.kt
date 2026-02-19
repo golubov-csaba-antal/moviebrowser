@@ -1,23 +1,36 @@
 package com.zappyware.moviebrowser
 
 import android.os.Bundle
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
+import com.zappyware.moviebrowser.composable.Toolbar
+import com.zappyware.moviebrowser.navigation.Details
+import com.zappyware.moviebrowser.navigation.Landing
 import com.zappyware.moviebrowser.page.detail.MovieDetailsScreen
 import com.zappyware.moviebrowser.page.landing.MovieListScreen
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.collections.listOf
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -27,6 +40,14 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.enableEdgeToEdge(window)
 
         setContent {
+            enableEdgeToEdge(
+                statusBarStyle = SystemBarStyle.light(
+                    Color.Transparent.value.toInt(), Color.Transparent.value.toInt()
+                ),
+                navigationBarStyle = SystemBarStyle.light(
+                    Color.Transparent.value.toInt(), Color.Transparent.value.toInt()
+                )
+            )
             MaterialTheme(
                 colorScheme = if(isSystemInDarkTheme()) {
                     darkColorScheme(onSurface = Color.White)
@@ -34,30 +55,43 @@ class MainActivity : AppCompatActivity() {
                     lightColorScheme()
                 }
             ) {
-                val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "list") {
-                    composable("list") {
-                        MovieListScreen(
-                            viewModel = hiltViewModel(),
-                            onDetailsClicked = { selectedMovie ->
-                                navController.navigate("details/${selectedMovie.id}")
-                            },
-                        )
+                val backStack = remember { mutableStateListOf<Any>(Landing) }
+                Scaffold(
+                    topBar = {
+                        Toolbar(
+                            backStack = backStack,
+                            title = "Movies",
+                            canGoBack = backStack.size > 1)
                     }
-                    composable(
-                        "details/{movieId}",
-                        arguments = listOf(
-                            navArgument("movieId") {
-                                type = NavType.LongType
+                ) { innerPadding ->
+                    NavDisplay(
+                        modifier = Modifier.padding(innerPadding),
+                        backStack = backStack,
+                        onBack = { backStack.removeLastOrNull() },
+                        entryDecorators = listOf(
+                            rememberSaveableStateHolderNavEntryDecorator(),
+                            rememberViewModelStoreNavEntryDecorator(),
+                        ),
+                        entryProvider = entryProvider {
+                            entry<Landing> {
+                                MovieListScreen(
+                                    viewModel = hiltViewModel(),
+                                    onDetailsClicked = { selectedMovie ->
+                                        backStack.add(Details(selectedMovie.id))
+                                    },
+                                )
                             }
-                        )
-                    ) {
-                        val movieId = it.arguments?.getLong("movieId") ?: 0L
-                        MovieDetailsScreen(
-                            viewModel = hiltViewModel(),
-                            movieId = movieId,
-                        )
-                    }
+                            entry<Details> {
+                                MovieDetailsScreen(
+                                    viewModel = hiltViewModel(),
+                                    movieId = it.movieId,
+                                )
+                            }
+                        },
+                        //transitionSpec = { slideInHorizontally(initialOffsetX = { it }) togetherWith slideOutHorizontally(targetOffsetX = { -it }) },
+                        //popTransitionSpec = { slideInHorizontally(initialOffsetX = { -it }) togetherWith slideOutHorizontally(targetOffsetX = { it }) },
+                        //predictivePopTransitionSpec = { slideInHorizontally(initialOffsetX = { -it }) togetherWith slideOutHorizontally(targetOffsetX = { it }) },
+                    )
                 }
             }
         }
