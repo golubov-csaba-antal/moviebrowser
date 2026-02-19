@@ -36,15 +36,15 @@ import com.zappyware.moviebrowser.data.Movie
 
 @Composable
 fun MovieListItem(
+    modifier: Modifier,
     movie: Movie,
     onDetailsClicked: (Movie) -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .size(196.dp, 270.dp)
+        modifier = Modifier.size(196.dp, 270.dp)
             .clickable {
                 onDetailsClicked(movie)
-            },
+            }.then(modifier),
     ) {
         AsyncImage(
             model = movie.smallCoverUrl,
