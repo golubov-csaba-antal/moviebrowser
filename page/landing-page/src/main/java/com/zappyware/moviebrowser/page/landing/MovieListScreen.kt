@@ -18,16 +18,19 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.WindowInsetsRulers
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zappyware.moviebrowser.data.Movie
 import com.zappyware.moviebrowser.network.tmdb.data.coverUrl
 import com.zappyware.moviebrowser.network.tmdb.data.smallCoverUrl
 import com.zappyware.moviebrowser.page.landing.composable.MovieListItem
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.math.absoluteValue
 
 @Composable
 fun MovieListScreen(viewModel: MovieListViewModel, onDetailsClicked: (Movie) -> Unit) {
@@ -63,10 +66,21 @@ fun MovieListScreenUI(
             state = pagerState,
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(16.dp, vertical = 0.dp),
-            pageSize = PageSize.Fixed(224.dp),
+            pageSpacing = 24.dp,
+            pageSize = PageSize.Fixed(196.dp),
         ) { pageIndex ->
             MovieListItem(
-                modifier = Modifier.dropShadow(
+                modifier = Modifier.graphicsLayer {
+                    val pageOffset = ((pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction).absoluteValue
+                    val scale = lerp(
+                        start = 0.94f,
+                        stop = 1f,
+                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                    )
+                    scaleX = scale
+                    scaleY = scale
+                    translationY = (1f - scaleY) * -270.dp.value
+                }.dropShadow(
                     shape = RoundedCornerShape(24.dp),
                     shadow = Shadow(
                         radius = 16.dp,
