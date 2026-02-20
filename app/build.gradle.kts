@@ -60,8 +60,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
     // Core
@@ -104,6 +102,10 @@ dependencies {
     // KSP
     ksp(libs.hilt.compiler)
     ksp(libs.room.compiler)
+
+    // Tooling
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     implementation(projects.core.data)
     implementation(projects.core.commonUi)

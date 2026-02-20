@@ -36,10 +36,11 @@ fun MovieListItem(
     onDetailsClicked: (Movie) -> Unit,
 ) {
     Box(
-        modifier = Modifier.size(196.dp, 270.dp)
+        modifier = modifier
+            .size(196.dp, 270.dp)
             .clickable {
                 onDetailsClicked(movie)
-            }.then(modifier),
+            },
     ) {
         AsyncImage(
             model = movie.smallCoverUrl,
@@ -86,7 +87,7 @@ fun MovieListItem(
                 color = Color.White,
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LinearProgressIndicator(progress = { movie.rating / 10.0f }, modifier = Modifier.fillMaxWidth())
+            LinearProgressIndicator(progress = movie.rating / 10.0f, modifier = Modifier.fillMaxWidth())
         }
     }
 }

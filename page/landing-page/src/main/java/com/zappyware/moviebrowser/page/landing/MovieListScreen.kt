@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
@@ -49,15 +50,23 @@ fun MovieListScreenUI(
     movies: State<List<Movie>>,
     onDetailsClicked: (Movie) -> Unit
 ) {
+    val onDetailsClickedCallback = remember {
+        { movie: Movie ->
+            onDetailsClicked(movie)
+        }
+    }
+
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .fitInside(WindowInsetsRulers.SafeDrawing.current)
     ) {
         Text(
             text = "Trending movies",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .height(48.dp)
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         )
@@ -71,29 +80,32 @@ fun MovieListScreenUI(
             pageSize = PageSize.Fixed(196.dp),
         ) { pageIndex ->
             MovieListItem(
-                modifier = Modifier.graphicsLayer {
-                    val pageOffset = ((pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction).absoluteValue
-                    val scale = lerp(
-                        start = 0.94f,
-                        stop = 1f,
-                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                    )
-                    scaleX = scale
-                    scaleY = scale
-                    translationY = (1f - scaleY) * -270.dp.value
-                }.dropShadow(
-                    shape = RoundedCornerShape(24.dp),
-                    shadow = Shadow(
-                        radius = 16.dp,
-                        color = if(isSystemInDarkTheme()) {
-                            Color.Black
-                        } else {
-                            Color.DarkGray
-                        }
+                modifier = Modifier
+                    .graphicsLayer {
+                        val pageOffset =
+                            ((pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction).absoluteValue
+                        val scale = lerp(
+                            start = 0.94f,
+                            stop = 1f,
+                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                        )
+                        scaleX = scale
+                        scaleY = scale
+                        translationY = (1f - scaleY) * -270.dp.value
+                    }
+                    .dropShadow(
+                        shape = RoundedCornerShape(24.dp),
+                        shadow = Shadow(
+                            radius = 16.dp,
+                            color = if (isSystemInDarkTheme()) {
+                                Color.Black
+                            } else {
+                                Color.DarkGray
+                            }
+                        ),
                     ),
-                ),
                 movie = movies.value[pageIndex],
-                onDetailsClicked,
+                onDetailsClickedCallback,
             )
         }
     }
@@ -102,7 +114,7 @@ fun MovieListScreenUI(
 @Composable
 @Preview(
     name = "phone",
-    device = "spec:width=360dp,height=640dp,dpi=480",
+    device = "spec:width=420dp,height=900dp,dpi=480",
     showSystemUi = true,
     uiMode = Configuration.UI_MODE_NIGHT_NO,
 )
