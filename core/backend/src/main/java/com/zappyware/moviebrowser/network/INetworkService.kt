@@ -1,9 +1,9 @@
 package com.zappyware.moviebrowser.network
 
-import com.zappyware.moviebrowser.data.Genre
-import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.data.GenreWidget
+import com.zappyware.moviebrowser.data.MovieWidget
 
 interface INetworkService {
-    suspend fun getGenres(mediaType: String): List<Genre>
-    suspend fun getTrendingMovies(): List<Movie>
+    suspend fun getGenres(mediaType: String): List<GenreWidget>
+    suspend fun getTrendingMovies(): List<MovieWidget>
 }

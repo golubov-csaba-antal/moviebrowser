@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.data.MovieWidget
 import com.zappyware.moviebrowser.network.tmdb.data.coverUrl
 import com.zappyware.moviebrowser.network.tmdb.data.smallCoverUrl
 import com.zappyware.moviebrowser.page.landing.composable.MovieListItem
@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.absoluteValue
 
 @Composable
-fun MovieListScreen(viewModel: MovieListViewModel, onDetailsClicked: (Movie) -> Unit) {
+fun MovieListScreen(viewModel: MovieListViewModel, onDetailsClicked: (MovieWidget) -> Unit) {
     val moviesListState = viewModel.movies.collectAsStateWithLifecycle(emptyList())
     MovieListScreenUI(
         moviesListState
@@ -47,12 +47,12 @@ fun MovieListScreen(viewModel: MovieListViewModel, onDetailsClicked: (Movie) -> 
 
 @Composable
 fun MovieListScreenUI(
-    movies: State<List<Movie>>,
-    onDetailsClicked: (Movie) -> Unit
+    movies: State<List<MovieWidget>>,
+    onDetailsClicked: (MovieWidget) -> Unit
 ) {
     val onDetailsClickedCallback = remember {
-        { movie: Movie ->
-            onDetailsClicked(movie)
+        { movieWidget: MovieWidget ->
+            onDetailsClicked(movieWidget)
         }
     }
 
@@ -104,7 +104,7 @@ fun MovieListScreenUI(
                             }
                         ),
                     ),
-                movie = movies.value[pageIndex],
+                movieWidget = movies.value[pageIndex],
                 onDetailsClickedCallback,
             )
         }
@@ -122,7 +122,7 @@ fun MovieListScreenUIPreview() {
     MovieListScreenUI(
         MutableStateFlow(
             listOf(
-                Movie(
+                MovieWidget(
                     id = 455476,
                     title = "Knights of the Zodiac",
                     genres = "Action, Sci-fi",
@@ -132,7 +132,7 @@ fun MovieListScreenUIPreview() {
                     rating = 6.5f,
                     isFavorite = true,
                 ),
-                Movie(
+                MovieWidget(
                     id = 385687,
                     title = "Fast X",
                     genres = "Action",

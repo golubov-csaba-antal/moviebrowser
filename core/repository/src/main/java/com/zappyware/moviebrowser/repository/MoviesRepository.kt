@@ -1,7 +1,7 @@
 package com.zappyware.moviebrowser.repository
 
 import com.zappyware.moviebrowser.common.ui.ViewState
-import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.data.MovieWidget
 import com.zappyware.moviebrowser.database.dao.FavoritesDao
 import com.zappyware.moviebrowser.database.dao.MoviesDao
 import com.zappyware.moviebrowser.database.entity.toMBFavoriteMovie
@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.toList
 import javax.inject.Inject
 
 class MoviesRepository @Inject constructor(
@@ -21,9 +20,9 @@ class MoviesRepository @Inject constructor(
     private val favoritesDao: FavoritesDao,
 ): IMoviesRepository {
 
-    override suspend fun fetchMovies(): Flow<ViewState<List<Movie>>> =
+    override suspend fun fetchMovies(): Flow<ViewState<List<MovieWidget>>> =
         flow {
-            emit(ViewState.loading<List<Movie>>())
+            emit(ViewState.loading<List<MovieWidget>>())
             val movies = service.getTrendingMovies()
             movies.run {
                 moviesDao.clearMovies()
@@ -44,7 +43,7 @@ class MoviesRepository @Inject constructor(
         }
     }
 
-    override suspend fun getMovieById(id: Long): Movie? =
+    override suspend fun getMovieById(id: Long): MovieWidget? =
         moviesDao.getMovieByContentId(id)?.toMovie()
 
     override suspend fun getIsFavoriteMovieById(id: Long): Boolean =

@@ -2,7 +2,7 @@ package com.zappyware.moviebrowser.page.landing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.data.MovieWidget
 import com.zappyware.moviebrowser.repository.IMoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +17,7 @@ class MovieListViewModel @Inject constructor(
     private val moviesRepository: IMoviesRepository,
 ) : ViewModel() {
 
-    val movies = MutableSharedFlow<List<Movie>>(
+    val movies = MutableSharedFlow<List<MovieWidget>>(
         replay = 1,
         extraBufferCapacity = 0,
     )
