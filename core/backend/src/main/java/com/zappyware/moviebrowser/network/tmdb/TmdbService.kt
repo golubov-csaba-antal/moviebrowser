@@ -1,7 +1,7 @@
 package com.zappyware.moviebrowser.network.tmdb
 
 import com.zappyware.moviebrowser.data.GenreWidget
-import com.zappyware.moviebrowser.data.MovieWidget
+import com.zappyware.moviebrowser.data.HorizontalPagerTrayWidget
 import com.zappyware.moviebrowser.network.INetworkService
 import com.zappyware.moviebrowser.network.tmdb.data.AUTH
 import com.zappyware.moviebrowser.network.tmdb.data.BASE_URL
@@ -35,14 +35,19 @@ class TmdbService @Inject constructor(
                 }
         }
 
-    override suspend fun getTrendingMovies(): List<MovieWidget> {
-        val movies = tmdbApi.getTrendingMovies(AUTH, language).results
+    override suspend fun getTrendingMoviesTray(): HorizontalPagerTrayWidget {
+        val tmdbMovies = tmdbApi.getTrendingMovies(AUTH, language).results
         val genres = getGenres("movie").associateBy { it.id }
 
-        return movies.map { tmdbMovie ->
+        val movies = tmdbMovies.map { tmdbMovie ->
             tmdbMovie.toMovie(
                 genres = tmdbMovie.genreIds.mapNotNull { genres[it]?.title }
             )
         }
+
+        return HorizontalPagerTrayWidget(
+            title = "Trending movies",
+            widgets = movies
+        )
     }
 }

@@ -1,4 +1,4 @@
-package com.zappyware.moviebrowser.page.landing.composable
+package com.zappyware.moviebrowser.common.ui.widgets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -30,7 +30,7 @@ import com.zappyware.moviebrowser.common.ui.R
 import com.zappyware.moviebrowser.data.MovieWidget
 
 @Composable
-fun MovieListItem(
+fun MovieWidgetComposable(
     modifier: Modifier,
     movieWidget: MovieWidget,
     onDetailsClicked: (MovieWidget) -> Unit,
