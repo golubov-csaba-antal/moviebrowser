@@ -5,9 +5,6 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +25,7 @@ import com.zappyware.moviebrowser.composable.Toolbar
 import com.zappyware.moviebrowser.navigation.Details
 import com.zappyware.moviebrowser.navigation.Landing
 import com.zappyware.moviebrowser.page.detail.MovieDetailsScreen
-import com.zappyware.moviebrowser.page.landing.MovieListScreen
+import com.zappyware.moviebrowser.page.landing.LandingScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.collections.listOf
 
@@ -74,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                         ),
                         entryProvider = entryProvider {
                             entry<Landing> {
-                                MovieListScreen(
+                                LandingScreen(
                                     viewModel = hiltViewModel(),
                                     onDetailsClicked = { selectedMovie ->
                                         backStack.add(Details(selectedMovie.id))

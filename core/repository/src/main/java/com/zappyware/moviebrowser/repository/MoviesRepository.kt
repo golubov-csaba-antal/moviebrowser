@@ -1,6 +1,7 @@
 package com.zappyware.moviebrowser.repository
 
 import com.zappyware.moviebrowser.data.MovieWidget
+import com.zappyware.moviebrowser.data.HorizontalPagerTrayWidget
 import com.zappyware.moviebrowser.database.dao.FavoritesDao
 import com.zappyware.moviebrowser.database.dao.MoviesDao
 import com.zappyware.moviebrowser.database.entity.toMBFavoriteMovie
@@ -15,16 +16,16 @@ class MoviesRepository @Inject constructor(
     private val favoritesDao: FavoritesDao,
 ): IMoviesRepository {
 
-    override suspend fun fetchMovies(): List<MovieWidget> {
-        val movies = service.getTrendingMovies()
-        movies.run {
-            moviesDao.clearMovies()
-            moviesDao.saveMovies(map { it.toMBMovie() })
-        }//moviesDao.getMovies().map { it.toMovie() }
-        movies.forEach {
+    override suspend fun fetchTrendingMoviesTray(): HorizontalPagerTrayWidget {
+        val tray = service.getTrendingMoviesTray()
+        tray.widgets.forEach {
             it.isFavorite = favoritesDao.isFavorites(it.id) != 0
         }
-        return movies
+
+        moviesDao.clearMovies()
+        moviesDao.saveMovies(tray.widgets.map { movie -> movie.toMBMovie() })
+
+        return tray
     }
 
     override suspend fun changeFavorite(id: Long, isFavorite: Boolean) {
