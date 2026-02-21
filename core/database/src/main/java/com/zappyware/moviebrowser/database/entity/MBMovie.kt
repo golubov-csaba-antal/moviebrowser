@@ -3,7 +3,7 @@ package com.zappyware.moviebrowser.database.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.data.MovieWidget
 import javax.annotation.concurrent.Immutable
 
 @Entity(tableName = MBConstants.Tables.T_MOVIES)
@@ -28,10 +28,10 @@ data class MBMovie(
     var isFavorite: Boolean,
 )
 
-fun MBMovie.toMovie(): Movie {
-    return Movie(id, title, genres, overview, smallCoverUrl, coverUrl, rating, isFavorite)
+fun MBMovie.toMovie(): MovieWidget {
+    return MovieWidget(id, title, genres, overview, smallCoverUrl, coverUrl, rating, isFavorite)
 }
 
-fun Movie.toMBMovie(): MBMovie {
+fun MovieWidget.toMBMovie(): MBMovie {
     return MBMovie(id, title, genres, overview, smallCoverUrl, coverUrl, rating, isFavorite)
 }

@@ -12,23 +12,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.zappyware.moviebrowser.common.ui.R
-import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.data.MovieWidget
 
 @Composable
 fun MovieMeta(
-    movie: State<Movie?>,
+    movieWidget: State<MovieWidget?>,
     isFavoriteState: State<Boolean>,
     modifier: Modifier,
     onFavoriteClicked: (Long,Boolean) -> Unit,
 ) {
-    val rememberMovie = movie.value
+    val rememberMovie = movieWidget.value
     Column(
         modifier = modifier
     ) {

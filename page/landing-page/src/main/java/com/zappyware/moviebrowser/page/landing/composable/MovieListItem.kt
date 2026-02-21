@@ -27,23 +27,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import com.zappyware.moviebrowser.common.ui.R
-import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.data.MovieWidget
 
 @Composable
 fun MovieListItem(
     modifier: Modifier,
-    movie: Movie,
-    onDetailsClicked: (Movie) -> Unit,
+    movieWidget: MovieWidget,
+    onDetailsClicked: (MovieWidget) -> Unit,
 ) {
     Box(
         modifier = modifier
             .size(196.dp, 270.dp)
             .clickable {
-                onDetailsClicked(movie)
+                onDetailsClicked(movieWidget)
             },
     ) {
         AsyncImage(
-            model = movie.smallCoverUrl,
+            model = movieWidget.smallCoverUrl,
             contentDescription = null,
             contentScale = ContentScale.FillWidth,
             modifier = Modifier.fillMaxSize()
@@ -53,7 +53,7 @@ fun MovieListItem(
         Icon(
             painter = painterResource(id = R.drawable.ic_favorite),
             contentDescription = null,
-            tint = if (movie.isFavorite) {
+            tint = if (movieWidget.isFavorite) {
                 Color.Yellow
             } else {
                 Color.White
@@ -68,7 +68,7 @@ fun MovieListItem(
                 .align(Alignment.BottomEnd),
         ) {
             Text(
-                text = movie.title,
+                text = movieWidget.title,
                 style = MaterialTheme.typography.labelLarge.copy(
                     shadow = Shadow(
                         color = Color.Black, offset = Offset(5f, 5f), blurRadius = 5f
@@ -78,7 +78,7 @@ fun MovieListItem(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = movie.genres,
+                text = movieWidget.genres,
                 style = MaterialTheme.typography.labelSmall.copy(
                     shadow = Shadow(
                         color = Color.Black, offset = Offset(5f, 5f), blurRadius = 5f
@@ -87,7 +87,7 @@ fun MovieListItem(
                 color = Color.White,
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LinearProgressIndicator(progress = movie.rating / 10.0f, modifier = Modifier.fillMaxWidth())
+            LinearProgressIndicator(progress = movieWidget.rating / 10.0f, modifier = Modifier.fillMaxWidth())
         }
     }
 }

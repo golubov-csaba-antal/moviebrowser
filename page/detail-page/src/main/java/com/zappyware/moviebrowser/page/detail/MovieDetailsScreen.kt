@@ -28,13 +28,13 @@ import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.compose.rememberConstraintsSizeResolver
 import coil3.request.ImageRequest
-import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.data.MovieWidget
 import com.zappyware.moviebrowser.page.detail.composable.MovieMeta
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun MovieDetailsScreen(viewModel: MovieDetailsViewModel, movieId: Long) {
-    val movie = viewModel.movie.collectAsStateWithLifecycle()
+    val movie = viewModel.movieWidget.collectAsStateWithLifecycle()
     val isFavoriteState = viewModel.isFavorite.collectAsStateWithLifecycle()
     MovieDetailsScreenUI(
         movie,
@@ -46,7 +46,7 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel, movieId: Long) {
 
 @Composable
 fun MovieDetailsScreenUI(
-    movie: State<Movie?>,
+    movieWidget: State<MovieWidget?>,
     isFavoriteState: State<Boolean>,
     onFavoriteClicked: (Long, Boolean) -> Unit,
 ) {
@@ -70,7 +70,7 @@ fun MovieDetailsScreenUI(
         sheetShadowElevation = 40.dp,
         sheetContent = {
             MovieMeta(
-                movie = movie,
+                movieWidget = movieWidget,
                 isFavoriteState = isFavoriteState,
                 modifier = Modifier.fillMaxWidth()
                     .height(screenHeight)
@@ -82,7 +82,7 @@ fun MovieDetailsScreenUI(
         val sizeResolver = rememberConstraintsSizeResolver()
         val painter = rememberAsyncImagePainter(
             model = ImageRequest.Builder(LocalPlatformContext.current)
-                .data(movie.value?.coverUrl)
+                .data(movieWidget.value?.coverUrl)
                 .size(sizeResolver)
                 .build(),
         )
@@ -109,8 +109,8 @@ fun MovieDetailsScreenUI(
 )
 fun MovieDetailsScreenUIPreview() {
     MovieDetailsScreenUI(
-        movie = MutableStateFlow<Movie?>(
-            Movie(
+        movieWidget = MutableStateFlow<MovieWidget?>(
+            MovieWidget(
                 id = 123L,
                 title = "Example Movie",
                 genres = "Action, Adventure, Sci-Fi",

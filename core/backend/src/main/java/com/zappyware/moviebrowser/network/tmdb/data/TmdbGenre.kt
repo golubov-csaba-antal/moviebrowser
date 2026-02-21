@@ -1,7 +1,7 @@
 package com.zappyware.moviebrowser.network.tmdb.data
 
 import com.google.gson.annotations.SerializedName
-import com.zappyware.moviebrowser.data.Genre
+import com.zappyware.moviebrowser.data.GenreWidget
 
 data class TmdbGenre(
 
@@ -12,7 +12,7 @@ data class TmdbGenre(
     val name: String,
 )
 
-fun TmdbGenre.toGenre(): Genre = Genre(
+fun TmdbGenre.toGenre(): GenreWidget = GenreWidget(
     id = id,
     title = name
 )
