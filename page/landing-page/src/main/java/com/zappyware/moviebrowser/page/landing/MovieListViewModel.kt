@@ -7,8 +7,6 @@ import com.zappyware.moviebrowser.repository.IMoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,15 +21,10 @@ class MovieListViewModel @Inject constructor(
     )
 
     fun fetchMovies() {
-        viewModelScope.launch {
-            moviesRepository.fetchMovies()
-                .flowOn(Dispatchers.Main)
-                .catch {
-                    // error handling
-                }
-                .collect {
-                    movies.emit(it.data.orEmpty())
-                }
+        viewModelScope.launch(Dispatchers.IO) {
+            movies.emit(
+                moviesRepository.fetchMovies()
+            )
         }
     }
 }
