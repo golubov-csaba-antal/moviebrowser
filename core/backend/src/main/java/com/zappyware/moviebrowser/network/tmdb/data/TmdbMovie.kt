@@ -1,7 +1,7 @@
 package com.zappyware.moviebrowser.network.tmdb.data
 
 import com.google.gson.annotations.SerializedName
-import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.data.MovieWidget
 import java.util.Date
 
 data class TmdbMovie(
@@ -34,7 +34,7 @@ data class TmdbMovie(
     val mediaType: String,
 
     @SerializedName("genre_ids")
-    val genreIds: LongArray,
+    val genreIds: List<Long>,
 
     @SerializedName("popularity")
     val popularity: Float,
@@ -52,10 +52,10 @@ data class TmdbMovie(
     val voteCount: Int
 )
 
-fun TmdbMovie.toMovie(): Movie = Movie(
+fun TmdbMovie.toMovie(genres: List<String>): MovieWidget = MovieWidget(
     id = id,
     title = title,
-    genres = "",
+    genres = genres.joinToString(", ") { it.lowercase() },
     overview = overview,
     smallCoverUrl = smallCoverUrl(posterPath),
     coverUrl = coverUrl(posterPath),

@@ -5,7 +5,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.fitInside
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -15,69 +14,77 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.shadow.Shadow
-import androidx.compose.ui.layout.WindowInsetsRulers
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.data.MovieWidget
 import com.zappyware.moviebrowser.network.tmdb.data.coverUrl
 import com.zappyware.moviebrowser.network.tmdb.data.smallCoverUrl
 import com.zappyware.moviebrowser.page.landing.composable.MovieListItem
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.absoluteValue
 
 @Composable
-fun MovieListScreen(viewModel: MovieListViewModel, onDetailsClicked: (Movie) -> Unit) {
+fun MovieListScreen(viewModel: MovieListViewModel, onDetailsClicked: (MovieWidget) -> Unit) {
     val moviesListState = viewModel.movies.collectAsStateWithLifecycle(emptyList())
+
     MovieListScreenUI(
-        moviesListState
-    ) {
-        onDetailsClicked(it)
+        movies = moviesListState,
+        onDetailsClicked = onDetailsClicked,
+    )
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchMovies()
     }
-    viewModel.fetchMovies()
 }
 
 @Composable
 fun MovieListScreenUI(
-    movies: State<List<Movie>>,
-    onDetailsClicked: (Movie) -> Unit
+    movies: State<List<MovieWidget>>,
+    onDetailsClicked: (MovieWidget) -> Unit
 ) {
-    val onDetailsClickedCallback = remember {
-        { movie: Movie ->
-            onDetailsClicked(movie)
+    val onDetailsClickedCallback = remember(onDetailsClicked) {
+        { movieWidget: MovieWidget ->
+            onDetailsClicked(movieWidget)
         }
     }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fitInside(WindowInsetsRulers.SafeDrawing.current)
     ) {
         Text(
             text = "Trending movies",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
-                .fillMaxWidth()
                 .height(48.dp)
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         )
 
         val pagerState = rememberPagerState(pageCount = { movies.value.size })
+        val shadowColor = if (isSystemInDarkTheme()) {
+            Color.Black
+        } else {
+            Color.DarkGray
+        }
+
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(16.dp, vertical = 0.dp),
             pageSpacing = 24.dp,
             pageSize = PageSize.Fixed(196.dp),
+            key = { index -> movies.value[index].id }
         ) { pageIndex ->
             MovieListItem(
                 modifier = Modifier
@@ -97,14 +104,10 @@ fun MovieListScreenUI(
                         shape = RoundedCornerShape(24.dp),
                         shadow = Shadow(
                             radius = 16.dp,
-                            color = if (isSystemInDarkTheme()) {
-                                Color.Black
-                            } else {
-                                Color.DarkGray
-                            }
+                            color = shadowColor
                         ),
                     ),
-                movie = movies.value[pageIndex],
+                movieWidget = movies.value[pageIndex],
                 onDetailsClickedCallback,
             )
         }
@@ -119,10 +122,10 @@ fun MovieListScreenUI(
     uiMode = Configuration.UI_MODE_NIGHT_NO,
 )
 fun MovieListScreenUIPreview() {
-    MovieListScreenUI(
-        MutableStateFlow(
+    val previewMovies = remember {
+        mutableStateOf(
             listOf(
-                Movie(
+                MovieWidget(
                     id = 455476,
                     title = "Knights of the Zodiac",
                     genres = "Action, Sci-fi",
@@ -132,7 +135,7 @@ fun MovieListScreenUIPreview() {
                     rating = 6.5f,
                     isFavorite = true,
                 ),
-                Movie(
+                MovieWidget(
                     id = 385687,
                     title = "Fast X",
                     genres = "Action",
@@ -143,7 +146,10 @@ fun MovieListScreenUIPreview() {
                     isFavorite = false,
                 ),
             )
-        ).collectAsStateWithLifecycle(),
+        )
+    }
+    MovieListScreenUI(
+        movies = previewMovies,
         onDetailsClicked = {},
     )
 }

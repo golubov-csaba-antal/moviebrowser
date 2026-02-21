@@ -1,7 +1,7 @@
 package com.zappyware.moviebrowser.data
 
-data class Movie(
-    val id: Long,
+data class MovieWidget(
+    override val id: Long,
     val title: String,
     var genres: String,
     val overview: String?,
@@ -10,4 +10,4 @@ data class Movie(
     val rating: Float,
     @Deprecated("Insert value into FavoritesDao instead")
     var isFavorite: Boolean,
-)
+): Widget(id)

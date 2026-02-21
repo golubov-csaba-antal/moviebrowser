@@ -1,18 +1,12 @@
 package com.zappyware.moviebrowser.repository
 
-import com.zappyware.moviebrowser.common.ui.ViewState
-import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.data.MovieWidget
 import com.zappyware.moviebrowser.database.dao.FavoritesDao
 import com.zappyware.moviebrowser.database.dao.MoviesDao
 import com.zappyware.moviebrowser.database.entity.toMBFavoriteMovie
 import com.zappyware.moviebrowser.database.entity.toMBMovie
 import com.zappyware.moviebrowser.database.entity.toMovie
 import com.zappyware.moviebrowser.network.INetworkService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.toList
 import javax.inject.Inject
 
 class MoviesRepository @Inject constructor(
@@ -21,19 +15,17 @@ class MoviesRepository @Inject constructor(
     private val favoritesDao: FavoritesDao,
 ): IMoviesRepository {
 
-    override suspend fun fetchMovies(): Flow<ViewState<List<Movie>>> =
-        flow {
-            emit(ViewState.loading<List<Movie>>())
-            val movies = service.getTrendingMovies()
-            movies.run {
-                moviesDao.clearMovies()
-                moviesDao.saveMovies(map { it.toMBMovie() })
-            }//moviesDao.getMovies().map { it.toMovie() }
-            movies.forEach {
-                it.isFavorite = favoritesDao.isFavorites(it.id) != 0
-            }
-            emit(ViewState.success(movies))
-        }.flowOn(Dispatchers.IO)
+    override suspend fun fetchMovies(): List<MovieWidget> {
+        val movies = service.getTrendingMovies()
+        movies.run {
+            moviesDao.clearMovies()
+            moviesDao.saveMovies(map { it.toMBMovie() })
+        }//moviesDao.getMovies().map { it.toMovie() }
+        movies.forEach {
+            it.isFavorite = favoritesDao.isFavorites(it.id) != 0
+        }
+        return movies
+    }
 
     override suspend fun changeFavorite(id: Long, isFavorite: Boolean) {
         val isMovieFavoriteEntity = id.toMBFavoriteMovie()
@@ -44,7 +36,7 @@ class MoviesRepository @Inject constructor(
         }
     }
 
-    override suspend fun getMovieById(id: Long): Movie? =
+    override suspend fun getMovieById(id: Long): MovieWidget? =
         moviesDao.getMovieByContentId(id)?.toMovie()
 
     override suspend fun getIsFavoriteMovieById(id: Long): Boolean =
