@@ -1,4 +1,4 @@
-package com.zappyware.moviebrowser.data
+package com.zappyware.moviebrowser.data.widget
 
 data class GenreWidget(
     override val id: Long,

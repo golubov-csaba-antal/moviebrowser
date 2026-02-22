@@ -1,13 +1,14 @@
-package com.zappyware.moviebrowser.data
+package com.zappyware.moviebrowser.data.widget
+
+import com.zappyware.moviebrowser.data.MediaType
 
 data class MovieWidget(
     override val id: Long,
+    val mediaType: MediaType,
     val title: String,
-    var genres: String,
+    val genres: String,
     val overview: String?,
     val smallCoverUrl: String?,
     val coverUrl: String?,
     val rating: Float,
-    @Deprecated("Insert value into FavoritesDao instead")
-    var isFavorite: Boolean,
 ): Widget(id)

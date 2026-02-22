@@ -2,7 +2,8 @@ package com.zappyware.moviebrowser.page.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zappyware.moviebrowser.data.MovieWidget
+import com.zappyware.moviebrowser.data.MediaType
+import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.repository.IMoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,10 +23,13 @@ class MovieDetailsViewModel @Inject constructor(
     private val _isFavorite = MutableStateFlow(false)
     val isFavorite: StateFlow<Boolean> get() = _isFavorite
 
-    fun getMovieById(movieId: Long) {
+    fun fetchDetailWidget(contentId: Long, mediaType: MediaType) {
         viewModelScope.launch(Dispatchers.IO) {
-            _movieWidget.emit(moviesRepository.getMovieById(movieId))
-            _isFavorite.emit(moviesRepository.getIsFavoriteMovieById(movieId))
+            val widget = moviesRepository.fetchDetailWidget(contentId, mediaType)?.widget
+            widget?.let {
+                _movieWidget.emit(it as MovieWidget)
+            }
+            _isFavorite.emit(moviesRepository.getIsFavoriteMovieById(contentId))
         }
     }
 

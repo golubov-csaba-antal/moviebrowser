@@ -1,7 +1,7 @@
 package com.zappyware.moviebrowser.network.tmdb.data
 
 import com.google.gson.annotations.SerializedName
-import com.zappyware.moviebrowser.data.GenreWidget
+import com.zappyware.moviebrowser.data.widget.GenreWidget
 
 data class TmdbGenre(
 
