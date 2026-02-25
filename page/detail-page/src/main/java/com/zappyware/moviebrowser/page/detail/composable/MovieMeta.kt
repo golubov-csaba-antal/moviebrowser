@@ -11,23 +11,21 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.zappyware.moviebrowser.common.ui.R
-import com.zappyware.moviebrowser.data.MovieWidget
+import com.zappyware.moviebrowser.data.widget.MovieWidget
 
 @Composable
 fun MovieMeta(
-    movieWidget: State<MovieWidget?>,
-    isFavoriteState: State<Boolean>,
+    movieWidget: MovieWidget?,
+    isFavorite: Boolean,
     modifier: Modifier,
     onFavoriteClicked: (Long,Boolean) -> Unit,
 ) {
-    val rememberMovie = movieWidget.value
     Column(
         modifier = modifier
     ) {
@@ -37,7 +35,7 @@ fun MovieMeta(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = rememberMovie?.title.orEmpty(),
+                text = movieWidget?.title.orEmpty(),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface,
             )
@@ -45,12 +43,12 @@ fun MovieMeta(
                 painter = painterResource(id = R.drawable.ic_favorite),
                 contentDescription = null,
                 modifier = Modifier.clickable {
-                    rememberMovie?.let {
-                        onFavoriteClicked(it.id, !isFavoriteState.value)
+                    movieWidget?.let {
+                        onFavoriteClicked(it.id, !isFavorite)
                     }
                 },
-                tint = if (isFavoriteState.value) {
-                    Color.Yellow
+                tint = if (isFavorite) {
+                    Color.Red
                 } else {
                     LocalContentColor.current
                 }
@@ -58,7 +56,7 @@ fun MovieMeta(
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = rememberMovie?.overview.orEmpty(),
+            text = movieWidget?.overview.orEmpty(),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )

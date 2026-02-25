@@ -22,6 +22,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.zappyware.moviebrowser.composable.Toolbar
+import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.navigation.Details
 import com.zappyware.moviebrowser.navigation.Landing
 import com.zappyware.moviebrowser.page.detail.MovieDetailsScreen
@@ -74,14 +75,17 @@ class MainActivity : AppCompatActivity() {
                                 LandingScreen(
                                     viewModel = hiltViewModel(),
                                     onDetailsClicked = { selectedMovie ->
-                                        backStack.add(Details(selectedMovie.id))
+                                        when(selectedMovie) {
+                                            is MovieWidget -> backStack.add(Details(selectedMovie.id, selectedMovie.mediaType))
+                                        }
                                     },
                                 )
                             }
                             entry<Details> {
                                 MovieDetailsScreen(
                                     viewModel = hiltViewModel(),
-                                    movieId = it.movieId,
+                                    movieId = it.contentId,
+                                    mediaType = it.mediaType,
                                 )
                             }
                         },

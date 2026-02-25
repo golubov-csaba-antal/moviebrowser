@@ -13,3 +13,11 @@ val MIGRATE_1_2 = object : Migration(1, 2) {
         )
     }
 }
+
+val MIGRATE_2_2 = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "DROP TABLE t_movies",
+        )
+    }
+}

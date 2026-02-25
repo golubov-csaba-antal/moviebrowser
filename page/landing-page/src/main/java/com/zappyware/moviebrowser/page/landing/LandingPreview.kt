@@ -6,8 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import com.zappyware.moviebrowser.common.ui.trays.HorizontalPagerTrayWidgetComposable
-import com.zappyware.moviebrowser.data.MovieWidget
-import com.zappyware.moviebrowser.data.HorizontalPagerTrayWidget
+import com.zappyware.moviebrowser.data.MediaType
+import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
+import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.network.tmdb.data.coverUrl
 import com.zappyware.moviebrowser.network.tmdb.data.smallCoverUrl
 
@@ -30,7 +31,7 @@ fun LandingPreview() {
                     smallCoverUrl = smallCoverUrl("qW4crfED8mpNDadSmMdi7ZDzhXF.jpg"),
                     coverUrl = coverUrl("qW4crfED8mpNDadSmMdi7ZDzhXF.jpg"),
                     rating = 6.5f,
-                    isFavorite = true,
+                    mediaType = MediaType.MOVIE,
                 ),
                 MovieWidget(
                     id = 385687,
@@ -40,13 +41,14 @@ fun LandingPreview() {
                     smallCoverUrl = smallCoverUrl("fiVW06jE7z9YnO4trhaMEdclSiC.jpg"),
                     coverUrl = coverUrl("fiVW06jE7z9YnO4trhaMEdclSiC.jpg"),
                     rating = 7.4f,
-                    isFavorite = false,
+                    mediaType = MediaType.MOVIE,
                 ),
             )
         )
     }
     val previewTray = remember {
         HorizontalPagerTrayWidget(
+            id = 1L,
             title = "Trending movies",
             widgets = previewMovies.value
         )
