@@ -1,12 +1,12 @@
 package com.zappyware.moviebrowser.repository
 
-import com.zappyware.moviebrowser.common.ui.ViewState
-import com.zappyware.moviebrowser.data.Movie
-import kotlinx.coroutines.flow.Flow
+import com.zappyware.moviebrowser.data.MediaType
+import com.zappyware.moviebrowser.data.screen.DetailScreen
+import com.zappyware.moviebrowser.data.tray.TrayWidget
 
 interface IMoviesRepository {
-    suspend fun fetchMovies(): Flow<ViewState<List<Movie>>>
+    suspend fun fetchLandingTrays(): List<TrayWidget>
     suspend fun changeFavorite(id: Long, isFavorite: Boolean)
-    suspend fun getMovieById(id: Long): Movie?
     suspend fun getIsFavoriteMovieById(id: Long): Boolean
+    suspend fun fetchDetailWidget(contentId: Long, mediaType: MediaType): DetailScreen?
 }

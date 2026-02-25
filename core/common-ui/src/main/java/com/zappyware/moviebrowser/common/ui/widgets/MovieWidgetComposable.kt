@@ -1,4 +1,4 @@
-package com.zappyware.moviebrowser.page.landing.composable
+package com.zappyware.moviebrowser.common.ui.widgets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,53 +20,48 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
-import com.zappyware.moviebrowser.common.ui.R
-import com.zappyware.moviebrowser.data.Movie
+import com.zappyware.moviebrowser.common.ui.FavoriteIcon
+import com.zappyware.moviebrowser.data.widget.MovieWidget
 
 @Composable
-fun MovieListItem(
+fun MovieWidgetComposable(
     modifier: Modifier,
-    movie: Movie,
-    onDetailsClicked: (Movie) -> Unit,
+    movieWidget: MovieWidget,
+    onDetailsClicked: (MovieWidget) -> Unit,
 ) {
     Box(
         modifier = modifier
-            .size(196.dp, 270.dp)
             .clickable {
-                onDetailsClicked(movie)
+                onDetailsClicked(movieWidget)
             },
     ) {
         AsyncImage(
-            model = movie.smallCoverUrl,
+            model = movieWidget.smallCoverUrl,
             contentDescription = null,
             contentScale = ContentScale.FillWidth,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .zIndex(1.0f)
                 .clip(RoundedCornerShape(24.dp)),
         )
-        Icon(
-            painter = painterResource(id = R.drawable.ic_favorite),
-            contentDescription = null,
-            tint = if (movie.isFavorite) {
-                Color.Yellow
-            } else {
-                Color.White
-            },
-            modifier = Modifier.padding(all = 16.dp)
+        FavoriteIcon(
+            modifier = Modifier
+                .padding(all = 16.dp)
                 .zIndex(2.0f)
                 .align(Alignment.TopStart),
+            contentId = movieWidget.id,
         )
         Column(
-            modifier = Modifier.zIndex(2.0f)
+            modifier = Modifier
+                .zIndex(2.0f)
                 .padding(16.dp)
                 .align(Alignment.BottomEnd),
         ) {
             Text(
-                text = movie.title,
+                text = movieWidget.title,
                 style = MaterialTheme.typography.labelLarge.copy(
                     shadow = Shadow(
                         color = Color.Black, offset = Offset(5f, 5f), blurRadius = 5f
@@ -78,7 +71,7 @@ fun MovieListItem(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = movie.genres,
+                text = movieWidget.genres,
                 style = MaterialTheme.typography.labelSmall.copy(
                     shadow = Shadow(
                         color = Color.Black, offset = Offset(5f, 5f), blurRadius = 5f
@@ -87,7 +80,7 @@ fun MovieListItem(
                 color = Color.White,
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LinearProgressIndicator(progress = movie.rating / 10.0f, modifier = Modifier.fillMaxWidth())
+            LinearProgressIndicator(progress = { movieWidget.rating / 10.0f }, modifier = Modifier.fillMaxWidth(), drawStopIndicator = { })
         }
     }
 }

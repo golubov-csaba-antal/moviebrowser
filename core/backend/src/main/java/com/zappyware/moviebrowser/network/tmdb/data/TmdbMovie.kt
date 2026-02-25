@@ -1,8 +1,8 @@
 package com.zappyware.moviebrowser.network.tmdb.data
 
 import com.google.gson.annotations.SerializedName
-import com.zappyware.moviebrowser.data.Movie
-import java.util.Date
+import com.zappyware.moviebrowser.data.MediaType
+import com.zappyware.moviebrowser.data.widget.MovieWidget
 
 data class TmdbMovie(
 
@@ -15,7 +15,7 @@ data class TmdbMovie(
     @SerializedName("id")
     val id: Long,
 
-    @SerializedName("title")
+    @SerializedName("title", ["name"])
     val title: String,
 
     @SerializedName("original_language")
@@ -28,19 +28,13 @@ data class TmdbMovie(
     val overview: String,
 
     @SerializedName("poster_path")
-    val posterPath: String,
-
-    @SerializedName("media_type")
-    val mediaType: String,
+    val posterPath: String?,
 
     @SerializedName("genre_ids")
-    val genreIds: LongArray,
+    val genreIds: List<Long>?,
 
     @SerializedName("popularity")
     val popularity: Float,
-
-    @SerializedName("release_date")
-    val releaseDate: Date,
 
     @SerializedName("video")
     val video: Boolean,
@@ -49,16 +43,17 @@ data class TmdbMovie(
     val voteAverage: Float,
 
     @SerializedName("vote_count")
-    val voteCount: Int
+    val voteCount: Int,
+
 )
 
-fun TmdbMovie.toMovie(): Movie = Movie(
+fun TmdbMovie.toMovie(mediaType: MediaType, genres: List<String>): MovieWidget = MovieWidget(
     id = id,
+    mediaType = mediaType,
     title = title,
-    genres = "",
+    genres = genres.joinToString(", ") { it.lowercase() },
     overview = overview,
-    smallCoverUrl = smallCoverUrl(posterPath),
-    coverUrl = coverUrl(posterPath),
+    smallCoverUrl = posterPath?.let { smallCoverUrl(it) }.orEmpty(),
+    coverUrl = posterPath?.let { coverUrl(it) }.orEmpty(),
     rating = voteAverage,
-    isFavorite = false,
 )

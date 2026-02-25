@@ -1,45 +1,147 @@
 package com.zappyware.moviebrowser.network.tmdb
 
-import com.zappyware.moviebrowser.data.Genre
-import com.zappyware.moviebrowser.data.Movie
+import com.google.gson.Gson
+import com.zappyware.moviebrowser.data.MediaType
+import com.zappyware.moviebrowser.data.screen.DetailScreen
+import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
+import com.zappyware.moviebrowser.data.tray.ShowcaseTrayWidget
+import com.zappyware.moviebrowser.data.tray.TrayWidget
+import com.zappyware.moviebrowser.data.widget.GenreWidget
+import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.network.INetworkService
 import com.zappyware.moviebrowser.network.tmdb.data.AUTH
 import com.zappyware.moviebrowser.network.tmdb.data.BASE_URL
+import com.zappyware.moviebrowser.network.tmdb.data.TmdbInterval
+import com.zappyware.moviebrowser.network.tmdb.data.TmdbMediaType
+import com.zappyware.moviebrowser.network.tmdb.data.TmdbMovie
 import com.zappyware.moviebrowser.network.tmdb.data.toGenre
 import com.zappyware.moviebrowser.network.tmdb.data.toMovie
+import com.zappyware.moviebrowser.network.tmdb.data.toTmdbMediaType
+import com.zappyware.moviebrowser.network.tmdb.response.MovieListResponse
+import com.zappyware.moviebrowser.network.tmdb.util.PathFactory
+import com.zappyware.moviebrowser.network.tmdb.util.TmdbMediaTypeDeserializer
+import com.zappyware.moviebrowser.network.tmdb.util.TmdbMediaTypeSerializer
+import okhttp3.OkHttpClient
+import retrofit2.Converter
 import retrofit2.Retrofit
-import java.util.*
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Locale
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 class TmdbService @Inject constructor(
-    private val retrofit: Retrofit
+    okHttpClient: OkHttpClient,
+    gson: Gson,
 ): INetworkService {
 
-    private val language: String by lazy { Locale.getDefault().let { "${it.language}-${it.displayCountry}" } }
+    private val language: String by lazy { Locale.getDefault().let { "${it.language}-${it.country}" } }
 
-    private val cachedGenres = HashMap<String,List<Genre>>()
+    private val cachedGenres = mutableMapOf<TmdbMediaType, List<GenreWidget>>()
 
     private val tmdbApi: TmdbApi by lazy {
-        retrofit.newBuilder()
+        Retrofit.Builder()
+            .client(okHttpClient)
+            .addConverterFactory(gson.toConverterFactory())
             .baseUrl(BASE_URL)
+            .addConverterFactory(PathFactory())
             .build()
             .create(TmdbApi::class.java)
     }
 
-    override suspend fun getGenres(mediaType: String): List<Genre> =
-        cachedGenres.getOrPut(mediaType) {
-            tmdbApi.getGenres(AUTH, mediaType, language).genres.map {
-                it.toGenre()
-            }
+    override suspend fun getGenres(mediaType: MediaType): List<GenreWidget> =
+        cachedGenres.getOrPut(mediaType.toTmdbMediaType()) {
+            tmdbApi.getGenres(AUTH, mediaType.toTmdbMediaType(), language)
+                .genres
+                .map {
+                    it.toGenre()
+                }
         }
 
-    override suspend fun getTrendingMovies(): List<Movie> =
-        tmdbApi.getTrendingMovies(AUTH, language).results.map { tmdbMovie ->
-            tmdbMovie.toMovie().also { movie ->
-                movie.genres = getGenres(tmdbMovie.mediaType)
-                    .filter { tmdbMovie.genreIds.contains(it.id) }
-                    .joinToString(", ") { it.title.lowercase() }
-            }
+    private suspend fun fetchWidgetList(mediaType: MediaType, serviceCall: suspend (TmdbMediaType) -> MovieListResponse): List<MovieWidget> {
+        val tmdbMovies = serviceCall(mediaType.toTmdbMediaType()).results
+        val genres = getGenres(mediaType).associateBy { it.id }
+
+        return tmdbMovies.map { tmdbMovie ->
+            tmdbMovie.toMovie(
+                mediaType = mediaType,
+                genres = tmdbMovie.genreIds.takeIf { !it.isNullOrEmpty() }?.mapNotNull { genres[it]?.title }.orEmpty()
+            )
         }
+    }
+
+    private suspend fun fetchWidget(mediaType: MediaType, serviceCall: suspend (TmdbMediaType) -> TmdbMovie): MovieWidget {
+        val tmdbMovie = serviceCall(mediaType.toTmdbMediaType())
+        val genres = getGenres(mediaType).associateBy { it.id }
+
+        return tmdbMovie.toMovie(
+            mediaType = mediaType,
+            genres = tmdbMovie.genreIds.takeIf { !it.isNullOrEmpty() }?.mapNotNull { genres[it]?.title }.orEmpty()
+        )
+    }
+
+    override suspend fun fetchLandingTrays(): List<TrayWidget> {
+        return listOf(
+            HorizontalPagerTrayWidget(
+                id = 1L,
+                title = "Daily trending movies",
+                widgets = fetchWidgetList(MediaType.MOVIE) { mediaType ->
+                    tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.DAY, language)
+                },
+            ),
+            HorizontalPagerTrayWidget(
+                id = 2L,
+                title = "Daily trending shows",
+                widgets = fetchWidgetList(MediaType.SHOW) { mediaType ->
+                    tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.DAY, language)
+                },
+            ),
+            ShowcaseTrayWidget(
+                id = 3L,
+                title = "Latest show",
+                widget = fetchWidget(MediaType.SHOW) { mediaType ->
+                    tmdbApi.getLatest(AUTH, mediaType, language)
+                },
+            ),
+            HorizontalPagerTrayWidget(
+                id = 4L,
+                title = "Weekly trending movies",
+                widgets = fetchWidgetList(MediaType.MOVIE) { mediaType ->
+                    tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.WEEK, language)
+                },
+            ),
+            HorizontalPagerTrayWidget(
+                id = 5L,
+                title = "Weekly trending shows",
+                widgets = fetchWidgetList(MediaType.SHOW) { mediaType ->
+                    tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.WEEK, language)
+                },
+            ),
+            ShowcaseTrayWidget(
+                id = 6L,
+                title = "Latest movie",
+                widget = fetchWidget(MediaType.MOVIE) { mediaType ->
+                    tmdbApi.getLatest(AUTH, mediaType, language)
+                },
+            ),
+        )
+    }
+
+    override suspend fun fetchDetailScreen(contentId: Long, mediaType: MediaType): DetailScreen? {
+        val widget = fetchWidget(mediaType) { mediaType ->
+            tmdbApi.getDetails(AUTH, mediaType, contentId, language, listOf("videos", "images"))
+        }
+        return DetailScreen(
+            widget = widget,
+            attributes = emptyMap(),
+            related = emptyList(),
+        )
+    }
+}
+
+private fun Gson.toConverterFactory(): Converter.Factory {
+    return GsonConverterFactory.create(
+        newBuilder()
+            .registerTypeAdapter(TmdbMediaType::class.java, TmdbMediaTypeSerializer())
+            .registerTypeAdapter(TmdbMediaType::class.java, TmdbMediaTypeDeserializer())
+            .create()
+    )
 }

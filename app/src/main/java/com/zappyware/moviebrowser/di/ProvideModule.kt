@@ -14,42 +14,28 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 @InstallIn(ViewModelComponent::class)
 class ProvideModule {
 
-    companion object {
-        private const val FAKE_BASE_URL = "https://google.com"
-    }
-
     @Provides
-    fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient = OkHttpClient.Builder()
-        .apply {
-            if(context.isDebuggable()) {
-                addInterceptor(HttpLoggingInterceptor().body())
+    fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient =
+        OkHttpClient.Builder()
+            .apply {
+                if (context.isDebuggable()) {
+                    addInterceptor(HttpLoggingInterceptor().body())
+                }
             }
-        }
-        .build()
-
-    @Provides
-    fun provideGson(): Gson = GsonBuilder()
-        .create()
-
-    @Provides
-    fun provideRetrofit(
-        okHttpClient: OkHttpClient,
-        gson: Gson
-    ): Retrofit =
-        Retrofit.Builder()
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .baseUrl(FAKE_BASE_URL)
             .build()
 
     @Provides
-    fun provideINetworkService(retrofit: Retrofit): INetworkService =
-        TmdbService(retrofit)
+    fun provideGson(): Gson = GsonBuilder().create()
+
+    @Provides
+    fun provideNetworkService(
+        okHttpClient: OkHttpClient,
+        gson: Gson,
+    ): INetworkService =
+        TmdbService(okHttpClient, gson)
 }

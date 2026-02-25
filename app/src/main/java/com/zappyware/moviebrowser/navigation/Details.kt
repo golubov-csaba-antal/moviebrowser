@@ -1,3 +1,8 @@
 package com.zappyware.moviebrowser.navigation
 
-data class Details(val movieId: Long)
+import com.zappyware.moviebrowser.data.MediaType
+
+data class Details(
+    val contentId: Long,
+    val mediaType: MediaType
+)
