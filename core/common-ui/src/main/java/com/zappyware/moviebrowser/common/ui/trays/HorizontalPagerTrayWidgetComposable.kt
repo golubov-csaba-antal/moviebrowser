@@ -82,28 +82,24 @@ fun Modifier.graphicsLayer(
     pagerState: PagerState,
     pageIndex: Int
 ): Modifier =
-    apply {
-        graphicsLayer {
-            val pageOffset =
-                ((pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction).absoluteValue
-            val scale = lerp(
-                start = 0.94f,
-                stop = 1f,
-                fraction = 1f - pageOffset.coerceIn(0f, 1f)
-            )
-            scaleX = scale
-            scaleY = scale
-            translationY = (1f - scaleY) * -270.dp.value
-        }
+    graphicsLayer {
+        val pageOffset =
+            ((pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction).absoluteValue
+        val scale = lerp(
+            start = 0.94f,
+            stop = 1f,
+            fraction = 1f - pageOffset.coerceIn(0f, 1f)
+        )
+        scaleX = scale
+        scaleY = scale
+        translationY = (1f - scaleY) * -270.dp.value
     }
 
 fun Modifier.dropShadow(shadowColor: Color): Modifier =
-    apply {
-        dropShadow(
-            shape = RoundedCornerShape(24.dp),
-            shadow = Shadow(
-                radius = 16.dp,
-                color = shadowColor
-            ),
-        )
-    }
+    dropShadow(
+        shape = RoundedCornerShape(24.dp),
+        shadow = Shadow(
+            radius = 16.dp,
+            color = shadowColor
+        ),
+    )
