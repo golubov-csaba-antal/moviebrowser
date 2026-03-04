@@ -1,6 +1,5 @@
 package com.zappyware.moviebrowser.page.landing
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zappyware.moviebrowser.common.ui.FavoriteProvider

@@ -28,7 +28,6 @@ import com.zappyware.moviebrowser.navigation.Landing
 import com.zappyware.moviebrowser.page.detail.MovieDetailsScreen
 import com.zappyware.moviebrowser.page.landing.LandingScreen
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.collections.listOf
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
