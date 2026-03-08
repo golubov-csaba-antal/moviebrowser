@@ -32,7 +32,7 @@ import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.page.detail.composable.MovieMeta
 
 @Composable
-fun MovieDetailsScreen(viewModel: MovieDetailsViewModel, movieId: Long, mediaType: MediaType) {
+fun MovieDetailsScreen(viewModel: MovieDetailsViewModel, movieId: String, mediaType: MediaType) {
     val movie by viewModel.movieWidget.collectAsStateWithLifecycle()
     val isFavoriteState by viewModel.isFavorite.collectAsStateWithLifecycle()
 
@@ -50,7 +50,7 @@ fun MovieDetailsScreen(viewModel: MovieDetailsViewModel, movieId: Long, mediaTyp
 fun MovieDetailsScreenUI(
     movieWidget: MovieWidget?,
     isFavoriteState: Boolean,
-    onFavoriteClicked: (Long, Boolean) -> Unit,
+    onFavoriteClicked: (String, Boolean) -> Unit,
 ) {
     val windowInfo = LocalWindowInfo.current
 
@@ -111,7 +111,7 @@ fun MovieDetailsScreenUI(
 fun MovieDetailsScreenUIPreview() {
     MovieDetailsScreenUI(
         movieWidget = MovieWidget(
-            id = 123L,
+            id = "123",
             title = "Example Movie",
             genres = "Action, Adventure, Sci-Fi",
             overview = "This is an overview of the example movie. It's full of action, adventure and sci-fi elements.",

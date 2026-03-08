@@ -8,5 +8,5 @@ import com.zappyware.moviebrowser.data.widget.GenreWidget
 interface INetworkService {
     suspend fun getGenres(mediaType: MediaType): List<GenreWidget>
     suspend fun fetchLandingTrays(): List<TrayWidget>
-    suspend fun fetchDetailScreen(contentId: Long, mediaType: MediaType): DetailScreen?
+    suspend fun fetchDetailScreen(contentId: String, mediaType: MediaType): DetailScreen?
 }

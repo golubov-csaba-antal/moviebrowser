@@ -23,7 +23,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val _isFavorite = MutableStateFlow(false)
     val isFavorite: StateFlow<Boolean> get() = _isFavorite
 
-    fun fetchDetailWidget(contentId: Long, mediaType: MediaType) {
+    fun fetchDetailWidget(contentId: String, mediaType: MediaType) {
         viewModelScope.launch(Dispatchers.IO) {
             val widget = moviesRepository.fetchDetailWidget(contentId, mediaType)?.widget
             widget?.let {
@@ -33,7 +33,7 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    fun onFavoriteClicked(movieId: Long, isFavorite: Boolean) {
+    fun onFavoriteClicked(movieId: String, isFavorite: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             moviesRepository.changeFavorite(movieId, isFavorite)
             _isFavorite.emit(isFavorite)

@@ -38,7 +38,7 @@ interface TmdbApi {
     suspend fun getDetails(
         @Header("Authorization") auth: String,
         @Path("mediaType") mediaType: TmdbMediaType,
-        @Path("contentId") contentId: Long,
+        @Path("contentId") contentId: String,
         @Query("language") language: String,
         @Query("append_to_response") append: List<String>,
     ): TmdbMovie

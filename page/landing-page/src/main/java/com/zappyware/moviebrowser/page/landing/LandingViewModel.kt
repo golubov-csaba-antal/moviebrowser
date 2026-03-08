@@ -29,6 +29,6 @@ class LandingViewModel @Inject constructor(
         }
     }
 
-    override suspend fun isFavorite(contentId: Long): Boolean =
+    override suspend fun isFavorite(contentId: String): Boolean =
         moviesRepository.getIsFavoriteMovieById(contentId)
 }

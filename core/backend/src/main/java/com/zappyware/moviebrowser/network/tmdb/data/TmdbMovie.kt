@@ -13,7 +13,7 @@ data class TmdbMovie(
     val backdropPath: String,
 
     @SerializedName("id")
-    val id: Long,
+    val id: String,
 
     @SerializedName("title", ["name"])
     val title: String,
@@ -31,7 +31,7 @@ data class TmdbMovie(
     val posterPath: String?,
 
     @SerializedName("genre_ids")
-    val genreIds: List<Long>?,
+    val genreIds: List<String>?,
 
     @SerializedName("popularity")
     val popularity: Float,

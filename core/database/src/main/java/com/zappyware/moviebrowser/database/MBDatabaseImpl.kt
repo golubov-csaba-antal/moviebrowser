@@ -8,7 +8,7 @@ import com.zappyware.moviebrowser.database.entity.MBFavoriteMovie
     entities = [
         MBFavoriteMovie::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = false,
 )
 abstract class MBDatabaseImpl : RoomDatabase(), MBDatabase

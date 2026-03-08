@@ -16,7 +16,7 @@ class MoviesRepository @Inject constructor(
     override suspend fun fetchLandingTrays(): List<TrayWidget> =
         service.fetchLandingTrays()
 
-    override suspend fun changeFavorite(id: Long, isFavorite: Boolean) {
+    override suspend fun changeFavorite(id: String, isFavorite: Boolean) {
         val isMovieFavoriteEntity = id.toMBFavoriteMovie()
         if(isFavorite) {
             favoritesDao.addToFavorites(isMovieFavoriteEntity)
@@ -25,9 +25,9 @@ class MoviesRepository @Inject constructor(
         }
     }
 
-    override suspend fun getIsFavoriteMovieById(id: Long): Boolean =
+    override suspend fun getIsFavoriteMovieById(id: String): Boolean =
         favoritesDao.isFavorites(id) != 0
 
-    override suspend fun fetchDetailWidget(contentId: Long, mediaType: MediaType): DetailScreen? =
+    override suspend fun fetchDetailWidget(contentId: String, mediaType: MediaType): DetailScreen? =
         service.fetchDetailScreen(contentId, mediaType)
 }

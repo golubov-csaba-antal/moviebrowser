@@ -17,7 +17,7 @@ import kotlinx.coroutines.async
 @Composable
 fun FavoriteIcon(
     modifier: Modifier,
-    contentId: Long,
+    contentId: String,
 ) {
     var isFavorite by remember { mutableStateOf(false) }
 

@@ -81,42 +81,42 @@ class TmdbService @Inject constructor(
     override suspend fun fetchLandingTrays(): List<TrayWidget> {
         return listOf(
             HorizontalPagerTrayWidget(
-                id = 1L,
+                id = "1",
                 title = "Daily trending movies",
                 widgets = fetchWidgetList(MediaType.MOVIE) { mediaType ->
                     tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.DAY, language)
                 },
             ),
             HorizontalPagerTrayWidget(
-                id = 2L,
+                id = "2",
                 title = "Daily trending shows",
                 widgets = fetchWidgetList(MediaType.SHOW) { mediaType ->
                     tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.DAY, language)
                 },
             ),
             ShowcaseTrayWidget(
-                id = 3L,
+                id = "3",
                 title = "Latest show",
                 widget = fetchWidget(MediaType.SHOW) { mediaType ->
                     tmdbApi.getLatest(AUTH, mediaType, language)
                 },
             ),
             HorizontalPagerTrayWidget(
-                id = 4L,
+                id = "4",
                 title = "Weekly trending movies",
                 widgets = fetchWidgetList(MediaType.MOVIE) { mediaType ->
                     tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.WEEK, language)
                 },
             ),
             HorizontalPagerTrayWidget(
-                id = 5L,
+                id = "5",
                 title = "Weekly trending shows",
                 widgets = fetchWidgetList(MediaType.SHOW) { mediaType ->
                     tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.WEEK, language)
                 },
             ),
             ShowcaseTrayWidget(
-                id = 6L,
+                id = "6",
                 title = "Latest movie",
                 widget = fetchWidget(MediaType.MOVIE) { mediaType ->
                     tmdbApi.getLatest(AUTH, mediaType, language)
@@ -125,7 +125,7 @@ class TmdbService @Inject constructor(
         )
     }
 
-    override suspend fun fetchDetailScreen(contentId: Long, mediaType: MediaType): DetailScreen? {
+    override suspend fun fetchDetailScreen(contentId: String, mediaType: MediaType): DetailScreen {
         val widget = fetchWidget(mediaType) { mediaType ->
             tmdbApi.getDetails(AUTH, mediaType, contentId, language, listOf("videos", "images"))
         }

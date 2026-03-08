@@ -6,7 +6,8 @@ import com.zappyware.moviebrowser.database.MBDatabase
 import com.zappyware.moviebrowser.database.MBDatabaseImpl
 import com.zappyware.moviebrowser.database.entity.MBConstants
 import com.zappyware.moviebrowser.database.migration.MIGRATE_1_2
-import com.zappyware.moviebrowser.database.migration.MIGRATE_2_2
+import com.zappyware.moviebrowser.database.migration.MIGRATE_2_3
+import com.zappyware.moviebrowser.database.migration.MIGRATE_3_4
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
@@ -24,7 +25,8 @@ object MBDatabaseModule {
     ): MBDatabase {
         return Room.databaseBuilder(context, MBDatabaseImpl::class.java, MBConstants.DB_NAME)
             .addMigrations(MIGRATE_1_2)
-            .addMigrations(MIGRATE_2_2)
+            .addMigrations(MIGRATE_2_3)
+            .addMigrations(MIGRATE_3_4)
             .fallbackToDestructiveMigration(true)
             .build()
     }

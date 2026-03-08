@@ -24,7 +24,7 @@ fun MovieMeta(
     movieWidget: MovieWidget?,
     isFavorite: Boolean,
     modifier: Modifier,
-    onFavoriteClicked: (Long,Boolean) -> Unit,
+    onFavoriteClicked: (String,Boolean) -> Unit,
 ) {
     Column(
         modifier = modifier

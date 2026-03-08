@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class MBFavoriteMovie(
     @PrimaryKey
     @ColumnInfo(MBConstants.Columns.C_MOVIE_ID)
-    val movieId: Long,
+    val movieId: String,
 )
 
-fun Long.toMBFavoriteMovie() = MBFavoriteMovie(this)
+fun String.toMBFavoriteMovie() = MBFavoriteMovie(this)

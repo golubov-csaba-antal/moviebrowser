@@ -12,7 +12,7 @@ import com.zappyware.moviebrowser.database.entity.MBFavoriteMovie
 interface FavoritesDao {
 
     @Query("SELECT COUNT(*) FROM ${MBConstants.Tables.T_FAVORITE_MOVIES} WHERE ${MBConstants.Columns.C_MOVIE_ID} = :movieId")
-    fun isFavorites(movieId: Long): Int
+    fun isFavorites(movieId: String): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addToFavorites(movie: MBFavoriteMovie)

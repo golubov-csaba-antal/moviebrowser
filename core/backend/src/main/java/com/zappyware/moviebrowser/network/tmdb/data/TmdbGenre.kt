@@ -6,7 +6,7 @@ import com.zappyware.moviebrowser.data.widget.GenreWidget
 data class TmdbGenre(
 
     @SerializedName("id")
-    val id: Long,
+    val id: String,
 
     @SerializedName("name")
     val name: String,
