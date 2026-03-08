@@ -14,7 +14,7 @@ data class TmdbVideo(
     val title: String,
 
     @SerializedName("original_title", ["original_name"])
-    val originalTitle: String,
+    val originalTitle: String?,
 
     @SerializedName("key")
     val key: String,
@@ -45,7 +45,7 @@ data class TmdbVideo(
 fun TmdbVideo.toVideoWidget(): VideoWidget = VideoWidget(
     id = id,
     title = title,
-    originalTitle = originalTitle,
+    originalTitle = originalTitle.orEmpty(),
     key = key,
     site = site,
     size = size,

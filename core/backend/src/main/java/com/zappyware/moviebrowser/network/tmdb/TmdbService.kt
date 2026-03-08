@@ -179,7 +179,7 @@ class TmdbService @Inject constructor(
 
     override suspend fun fetchDetailScreen(contentId: String, mediaType: MediaType): PageWidget {
         return fetchPage(mediaType) { mediaType ->
-            tmdbApi.getDetails(AUTH, mediaType, contentId, language, listOf("videos", "images"))
+            tmdbApi.getDetails(AUTH, mediaType, contentId, language, "videos,images")
         }
     }
 }

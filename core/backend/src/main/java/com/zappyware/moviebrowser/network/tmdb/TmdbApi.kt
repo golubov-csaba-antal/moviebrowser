@@ -67,6 +67,6 @@ interface TmdbApi {
         @Path("mediaType") mediaType: TmdbMediaType,
         @Path("contentId") contentId: String,
         @Query("language") language: String,
-        @Query("append_to_response") append: List<String>,
+        @Query("append_to_response") append: String,
     ): TmdbDetailPage
 }

@@ -10,7 +10,7 @@ import com.zappyware.moviebrowser.data.widget.VideoWidget
 import java.util.Date
 
 data class DetailPageWidget(
-    val adult: Boolean,
+    val adult: Boolean?,
     val backdropPath: String?,
     val created: List<PeopleWidget>,
     val episodeRunTime: List<Int>,
@@ -25,13 +25,13 @@ data class DetailPageWidget(
     val title: String,
     val nextEpisodeToAir: MovieWidget?,
     val networks: List<String>,
-    val episodesCount: Int,
-    val seasonsCount: Int,
+    val episodesCount: Int?,
+    val seasonsCount: Int?,
     val originCountry: List<String>,
     val originalLanguage: String,
     val originalTitle: String,
     val overview: String,
-    val popularity: Float,
+    val popularity: Float?,
     val posterPath: String?,
     val productionCompanies: List<String>,
     val productionCountries: List<String>,
@@ -40,9 +40,9 @@ data class DetailPageWidget(
     val status: String,
     val tagline: String,
     val type: ContentType,
-    val voteAverage: Float,
-    val voteCount: Int,
-    val isVideo: Boolean,
+    val voteAverage: Float?,
+    val voteCount: Int?,
+    val isVideo: Boolean?,
     val videos: List<VideoWidget>,
     val images: List<ImageWidget>,
 ): PageWidget(id)

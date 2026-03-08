@@ -176,6 +176,6 @@ data class TmdbDetailPage(
             voteCount = voteCount,
             isVideo = isVideo,
             videos = videos?.map { it.toVideoWidget() } ?: emptyList(),
-            images = images?.map { it.toImageWidget() } ?: emptyList()
+            images = images?.filter { !it.imagePath.isNullOrEmpty() }?.map { it.toImageWidget() } ?: emptyList()
         )
 }

@@ -3,6 +3,7 @@ package com.zappyware.moviebrowser.network.tmdb.data.entities
 import com.google.gson.annotations.SerializedName
 import com.zappyware.moviebrowser.data.common.Language
 import com.zappyware.moviebrowser.data.widget.ImageWidget
+import com.zappyware.moviebrowser.network.tmdb.data.coverUrl
 
 data class TmdbImage(
 
@@ -25,7 +26,7 @@ data class TmdbImage(
     val iso639: String,
 
     @SerializedName("file_path")
-    val imagePath: String,
+    val imagePath: String?,
 
     @SerializedName("vote_average")
     val voteAverage: Float,
@@ -41,7 +42,7 @@ fun TmdbImage.toImageWidget(): ImageWidget = ImageWidget(
     width = width,
     height = height,
     language = Language(iso639, iso3166),
-    imagePath = imagePath,
+    imagePath = coverUrl(imagePath!!),
     voteAverage = voteAverage,
     voteCount = voteCount,
 )

@@ -2,6 +2,7 @@ package com.zappyware.moviebrowser.common.ui.widgets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,45 +30,41 @@ fun VideoWidgetComposable(
     widget: VideoWidget,
     onDetailsClicked: (Widget) -> Unit,
 ) {
-    Box(
+    val backgroundColor = if (isSystemInDarkTheme()) {
+        Color.DarkGray
+    } else {
+        Color.LightGray
+    }
+
+    Column(
         modifier = modifier
+            .zIndex(1.0f)
+            .clip(RoundedCornerShape(24.dp))
+            .background(backgroundColor)
+            .padding(16.dp)
             .clickable {
                 onDetailsClicked(widget)
             },
     ) {
-        // symbolies the image as it's missing from the response
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .zIndex(1.0f)
-                .background(Color.DarkGray)
-                .clip(RoundedCornerShape(24.dp)),
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = widget.title,
+            style = MaterialTheme.typography.labelLarge.copy(
+                shadow = Shadow(
+                    color = Color.Black, offset = Offset(5f, 5f), blurRadius = 5f
+                )
+            ),
+            color = Color.White,
         )
-        Column(
-            modifier = Modifier
-                .zIndex(2.0f)
-                .padding(16.dp)
-                .align(Alignment.BottomEnd),
-        ) {
-            Text(
-                text = widget.title,
-                style = MaterialTheme.typography.labelLarge.copy(
-                    shadow = Shadow(
-                        color = Color.Black, offset = Offset(5f, 5f), blurRadius = 5f
-                    )
-                ),
-                color = Color.White,
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "${widget.type}, ${widget.site}",
-                style = MaterialTheme.typography.labelSmall.copy(
-                    shadow = Shadow(
-                        color = Color.Black, offset = Offset(5f, 5f), blurRadius = 5f
-                    )
-                ),
-                color = Color.White,
-            )
-        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = "${widget.type}, ${widget.site}",
+            style = MaterialTheme.typography.labelSmall.copy(
+                shadow = Shadow(
+                    color = Color.Black, offset = Offset(5f, 5f), blurRadius = 5f
+                )
+            ),
+            color = Color.White,
+        )
     }
 }

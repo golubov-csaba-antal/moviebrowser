@@ -58,7 +58,7 @@ fun HorizontalPagerTrayWidgetComposable(
     val pageSize = remember {
         PageSize.Fixed(
             if (tray.widgets.first() is VideoWidget) {
-                480.dp
+                224.dp
             } else if (tray.widgets.first() is PeopleWidget) {
                 120.dp
             } else {
@@ -108,7 +108,7 @@ fun HorizontalPagerTrayWidgetComposable(
                 is VideoWidget -> {
                     VideoWidgetComposable(
                         modifier = Modifier
-                            .size(480.dp, 270.dp)
+                            .size(224.dp, 126.dp)
                             .graphicsLayer(pagerState, pageIndex)
                             .dropShadow(shadowColor, 24.dp, 16.dp),
                         widget = widget,

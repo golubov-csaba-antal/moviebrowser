@@ -54,7 +54,7 @@ fun TmdbPeople.toPeopleWidget(): PeopleWidget = PeopleWidget(
     popularity = popularity,
     gender = gender.toGender(),
     department = department,
-    profilePath = profilePath,
+    profilePath = profilePath?.let { coverUrl(it) },
     relatedContents = emptyList(),
 )
 
