@@ -28,27 +28,31 @@ import coil3.compose.rememberConstraintsSizeResolver
 import coil3.request.ImageRequest
 import com.zappyware.moviebrowser.common.ui.shimmer
 import com.zappyware.moviebrowser.data.MediaType
-import com.zappyware.moviebrowser.data.widget.MovieWidget
+import com.zappyware.moviebrowser.data.common.ContentType
+import com.zappyware.moviebrowser.data.page.DetailPageWidget
 import com.zappyware.moviebrowser.page.detail.composable.MovieMeta
 
 @Composable
 fun MovieDetailsScreen(viewModel: MovieDetailsViewModel, movieId: String, mediaType: MediaType) {
-    val movie by viewModel.movieWidget.collectAsStateWithLifecycle()
+    val pageWidget by viewModel.pageWidget.collectAsStateWithLifecycle()
     val isFavoriteState by viewModel.isFavorite.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.fetchDetailWidget(movieId, mediaType)
     }
-    MovieDetailsScreenUI(
-        movie,
-        isFavoriteState,
-        viewModel::onFavoriteClicked,
-    )
+
+    pageWidget?.let {
+        MovieDetailsScreenUI(
+            it as DetailPageWidget,
+            isFavoriteState,
+            viewModel::onFavoriteClicked,
+        )
+    }
 }
 
 @Composable
 fun MovieDetailsScreenUI(
-    movieWidget: MovieWidget?,
+    pageWidget: DetailPageWidget?,
     isFavoriteState: Boolean,
     onFavoriteClicked: (String, Boolean) -> Unit,
 ) {
@@ -70,7 +74,7 @@ fun MovieDetailsScreenUI(
         sheetShadowElevation = 40.dp,
         sheetContent = {
             MovieMeta(
-                movieWidget = movieWidget,
+                pageWidget = pageWidget,
                 isFavorite = isFavoriteState,
                 modifier = Modifier.fillMaxWidth()
                     .height(screenHeight)
@@ -82,7 +86,7 @@ fun MovieDetailsScreenUI(
         val sizeResolver = rememberConstraintsSizeResolver()
         val painter = rememberAsyncImagePainter(
             model = ImageRequest.Builder(LocalPlatformContext.current)
-                .data(movieWidget?.coverUrl)
+                .data(pageWidget?.posterPath)
                 .size(sizeResolver)
                 .build(),
         )
@@ -91,7 +95,7 @@ fun MovieDetailsScreenUI(
             painter = painter,
             contentDescription = null,
             modifier = Modifier.fillMaxWidth()
-                .shimmer(isLoading = movieWidget == null)
+                .shimmer(isLoading = pageWidget == null)
                 .padding(top = 16.dp)
                 .aspectRatio(2f/3f)
                 .clip(RoundedCornerShape(32.dp, 32.dp))
@@ -110,15 +114,42 @@ fun MovieDetailsScreenUI(
 )
 fun MovieDetailsScreenUIPreview() {
     MovieDetailsScreenUI(
-        movieWidget = MovieWidget(
+        pageWidget = DetailPageWidget(
+            adult = false,
+            backdropPath = null,
+            created = emptyList(),
+            episodeRunTime = emptyList(),
+            firstAirDate = null,
+            genreIds = listOf("Action", "Adventure", "Sci-Fi"),
+            homepage = "",
             id = "123",
+            isInProduction = false,
+            languages = emptyList(),
+            lastAirDate = null,
+            lastEpisodeToAir = null,
             title = "Example Movie",
-            genres = "Action, Adventure, Sci-Fi",
+            nextEpisodeToAir = null,
+            networks = emptyList(),
+            episodesCount = 0,
+            seasonsCount = 0,
+            originCountry = emptyList(),
+            originalLanguage = "",
+            originalTitle = "",
             overview = "This is an overview of the example movie. It's full of action, adventure and sci-fi elements.",
-            smallCoverUrl = "https://image.tmdb.org/t/p/w200/qW4crfED8mpNDadSmMdi7ZDzhXF.jpg",
-            coverUrl = "https://image.tmdb.org/t/p/original/qW4crfED8mpNDadSmMdi7ZDzhXF.jpg",
-            rating = 4.5f,
-            mediaType = MediaType.MOVIE,
+            popularity = 0f,
+            posterPath = "/qW4crfED8mpNDadSmMdi7ZDzhXF.jpg",
+            productionCompanies = emptyList(),
+            productionCountries = emptyList(),
+            seasons = emptyList(),
+            dubs = emptyList(),
+            status = "",
+            tagline = "",
+            type = ContentType.Scripted,
+            voteAverage = 4.5f,
+            voteCount = 6,
+            isVideo = false,
+            videos = emptyList(),
+            images = emptyList(),
         ),
         isFavoriteState = true,
     ) { _, _ -> }

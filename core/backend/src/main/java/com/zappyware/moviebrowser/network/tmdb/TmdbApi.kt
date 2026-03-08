@@ -1,8 +1,9 @@
 package com.zappyware.moviebrowser.network.tmdb
 
-import com.zappyware.moviebrowser.network.tmdb.data.TmdbInterval
-import com.zappyware.moviebrowser.network.tmdb.data.TmdbMediaType
-import com.zappyware.moviebrowser.network.tmdb.data.TmdbMovie
+import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbMovie
+import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbInterval
+import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbMediaType
+import com.zappyware.moviebrowser.network.tmdb.data.page.TmdbDetailPage
 import com.zappyware.moviebrowser.network.tmdb.response.GenreListResponse
 import com.zappyware.moviebrowser.network.tmdb.response.MovieListResponse
 import retrofit2.http.GET
@@ -41,5 +42,5 @@ interface TmdbApi {
         @Path("contentId") contentId: String,
         @Query("language") language: String,
         @Query("append_to_response") append: List<String>,
-    ): TmdbMovie
+    ): TmdbDetailPage
 }

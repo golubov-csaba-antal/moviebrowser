@@ -1,8 +1,10 @@
-package com.zappyware.moviebrowser.network.tmdb.data
+package com.zappyware.moviebrowser.network.tmdb.data.entities
 
 import com.google.gson.annotations.SerializedName
 import com.zappyware.moviebrowser.data.MediaType
 import com.zappyware.moviebrowser.data.widget.MovieWidget
+import com.zappyware.moviebrowser.network.tmdb.data.coverUrl
+import com.zappyware.moviebrowser.network.tmdb.data.smallCoverUrl
 
 data class TmdbMovie(
 

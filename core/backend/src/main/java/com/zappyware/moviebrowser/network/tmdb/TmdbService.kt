@@ -2,7 +2,7 @@ package com.zappyware.moviebrowser.network.tmdb
 
 import com.google.gson.Gson
 import com.zappyware.moviebrowser.data.MediaType
-import com.zappyware.moviebrowser.data.screen.DetailScreen
+import com.zappyware.moviebrowser.data.page.PageWidget
 import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
 import com.zappyware.moviebrowser.data.tray.ShowcaseTrayWidget
 import com.zappyware.moviebrowser.data.tray.TrayWidget
@@ -11,20 +11,23 @@ import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.network.INetworkService
 import com.zappyware.moviebrowser.network.tmdb.data.AUTH
 import com.zappyware.moviebrowser.network.tmdb.data.BASE_URL
-import com.zappyware.moviebrowser.network.tmdb.data.TmdbInterval
-import com.zappyware.moviebrowser.network.tmdb.data.TmdbMediaType
-import com.zappyware.moviebrowser.network.tmdb.data.TmdbMovie
-import com.zappyware.moviebrowser.network.tmdb.data.toGenre
-import com.zappyware.moviebrowser.network.tmdb.data.toMovie
-import com.zappyware.moviebrowser.network.tmdb.data.toTmdbMediaType
+import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbMovie
+import com.zappyware.moviebrowser.network.tmdb.data.entities.toGenre
+import com.zappyware.moviebrowser.network.tmdb.data.entities.toMovie
+import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbInterval
+import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbMediaType
+import com.zappyware.moviebrowser.network.tmdb.data.enums.toTmdbMediaType
+import com.zappyware.moviebrowser.network.tmdb.data.page.TmdbPage
 import com.zappyware.moviebrowser.network.tmdb.response.MovieListResponse
 import com.zappyware.moviebrowser.network.tmdb.util.PathFactory
+import com.zappyware.moviebrowser.network.tmdb.util.TmdbDateAdapter
 import com.zappyware.moviebrowser.network.tmdb.util.TmdbMediaTypeDeserializer
 import com.zappyware.moviebrowser.network.tmdb.util.TmdbMediaTypeSerializer
 import okhttp3.OkHttpClient
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -78,6 +81,16 @@ class TmdbService @Inject constructor(
         )
     }
 
+    private suspend fun fetchPage(mediaType: MediaType, serviceCall: suspend (TmdbMediaType) -> TmdbPage): PageWidget {
+        val tmdbPage = serviceCall(mediaType.toTmdbMediaType())
+        val genres = getGenres(mediaType).associateBy { it.id }
+
+        return tmdbPage.toPageWidget(
+            mediaType = mediaType,
+            genres = tmdbPage.getGenres().takeIf { !it.isNullOrEmpty() }?.mapNotNull { genres[it]?.title }.orEmpty()
+        )
+    }
+
     override suspend fun fetchLandingTrays(): List<TrayWidget> {
         return listOf(
             HorizontalPagerTrayWidget(
@@ -125,21 +138,17 @@ class TmdbService @Inject constructor(
         )
     }
 
-    override suspend fun fetchDetailScreen(contentId: String, mediaType: MediaType): DetailScreen {
-        val widget = fetchWidget(mediaType) { mediaType ->
+    override suspend fun fetchDetailScreen(contentId: String, mediaType: MediaType): PageWidget {
+        return fetchPage(mediaType) { mediaType ->
             tmdbApi.getDetails(AUTH, mediaType, contentId, language, listOf("videos", "images"))
         }
-        return DetailScreen(
-            widget = widget,
-            attributes = emptyMap(),
-            related = emptyList(),
-        )
     }
 }
 
 private fun Gson.toConverterFactory(): Converter.Factory {
     return GsonConverterFactory.create(
         newBuilder()
+            .registerTypeAdapter(Date::class.java, TmdbDateAdapter())
             .registerTypeAdapter(TmdbMediaType::class.java, TmdbMediaTypeSerializer())
             .registerTypeAdapter(TmdbMediaType::class.java, TmdbMediaTypeDeserializer())
             .create()

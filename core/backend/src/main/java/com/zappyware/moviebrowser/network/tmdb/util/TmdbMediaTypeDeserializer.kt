@@ -1,6 +1,6 @@
 package com.zappyware.moviebrowser.network.tmdb.util
 
-import com.zappyware.moviebrowser.network.tmdb.data.TmdbMediaType
+import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbMediaType
 import com.zappyware.moviebrowser.util.EnumDeserializer
 
 class TmdbMediaTypeDeserializer: EnumDeserializer<TmdbMediaType>() {

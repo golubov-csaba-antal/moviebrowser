@@ -1,6 +1,6 @@
 package com.zappyware.moviebrowser.network.tmdb.util
 
-import com.zappyware.moviebrowser.network.tmdb.data.TmdbInterval
+import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbInterval
 import retrofit2.Converter
 
 class TmdbIntervalConverter: Converter<TmdbInterval, String?> {

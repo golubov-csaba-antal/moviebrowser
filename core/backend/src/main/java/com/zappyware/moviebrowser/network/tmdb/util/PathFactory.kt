@@ -1,7 +1,7 @@
 package com.zappyware.moviebrowser.network.tmdb.util
 
-import com.zappyware.moviebrowser.network.tmdb.data.TmdbInterval
-import com.zappyware.moviebrowser.network.tmdb.data.TmdbMediaType
+import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbInterval
+import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbMediaType
 import retrofit2.Converter
 import retrofit2.Retrofit
 import java.lang.reflect.Type

@@ -17,11 +17,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.zappyware.moviebrowser.common.ui.R
-import com.zappyware.moviebrowser.data.widget.MovieWidget
+import com.zappyware.moviebrowser.data.page.DetailPageWidget
 
 @Composable
 fun MovieMeta(
-    movieWidget: MovieWidget?,
+    pageWidget: DetailPageWidget?,
     isFavorite: Boolean,
     modifier: Modifier,
     onFavoriteClicked: (String,Boolean) -> Unit,
@@ -35,7 +35,7 @@ fun MovieMeta(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = movieWidget?.title.orEmpty(),
+                text = pageWidget?.title.orEmpty(),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface,
             )
@@ -43,7 +43,7 @@ fun MovieMeta(
                 painter = painterResource(id = R.drawable.ic_favorite),
                 contentDescription = null,
                 modifier = Modifier.clickable {
-                    movieWidget?.let {
+                    pageWidget?.let {
                         onFavoriteClicked(it.id, !isFavorite)
                     }
                 },
@@ -56,7 +56,7 @@ fun MovieMeta(
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = movieWidget?.overview.orEmpty(),
+            text = pageWidget?.overview.orEmpty(),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )

@@ -1,4 +1,4 @@
-package com.zappyware.moviebrowser.network.tmdb.data
+package com.zappyware.moviebrowser.network.tmdb.data.entities
 
 import com.google.gson.annotations.SerializedName
 import com.zappyware.moviebrowser.data.widget.GenreWidget

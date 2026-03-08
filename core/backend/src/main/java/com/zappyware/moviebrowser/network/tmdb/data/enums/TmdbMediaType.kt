@@ -1,4 +1,4 @@
-package com.zappyware.moviebrowser.network.tmdb.data
+package com.zappyware.moviebrowser.network.tmdb.data.enums
 
 import com.zappyware.moviebrowser.data.MediaType
 

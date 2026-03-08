@@ -3,7 +3,7 @@ package com.zappyware.moviebrowser.network.tmdb.util
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
-import com.zappyware.moviebrowser.network.tmdb.data.TmdbMediaType
+import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbMediaType
 import com.zappyware.moviebrowser.util.EnumSerializer
 import java.lang.reflect.Type
 

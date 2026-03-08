@@ -1,7 +1,7 @@
 package com.zappyware.moviebrowser.repository
 
 import com.zappyware.moviebrowser.data.MediaType
-import com.zappyware.moviebrowser.data.screen.DetailScreen
+import com.zappyware.moviebrowser.data.page.PageWidget
 import com.zappyware.moviebrowser.data.tray.TrayWidget
 import com.zappyware.moviebrowser.database.dao.FavoritesDao
 import com.zappyware.moviebrowser.database.entity.toMBFavoriteMovie
@@ -28,6 +28,6 @@ class MoviesRepository @Inject constructor(
     override suspend fun getIsFavoriteMovieById(id: String): Boolean =
         favoritesDao.isFavorites(id) != 0
 
-    override suspend fun fetchDetailWidget(contentId: String, mediaType: MediaType): DetailScreen? =
+    override suspend fun fetchDetailWidget(contentId: String, mediaType: MediaType): PageWidget? =
         service.fetchDetailScreen(contentId, mediaType)
 }
