@@ -5,7 +5,10 @@ import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbInterval
 import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbMediaType
 import com.zappyware.moviebrowser.network.tmdb.data.page.TmdbDetailPage
 import com.zappyware.moviebrowser.network.tmdb.response.GenreListResponse
+import com.zappyware.moviebrowser.network.tmdb.response.ImageListResponse
 import com.zappyware.moviebrowser.network.tmdb.response.MovieListResponse
+import com.zappyware.moviebrowser.network.tmdb.response.PeopleListResponse
+import com.zappyware.moviebrowser.network.tmdb.response.VideoListResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
@@ -34,6 +37,29 @@ interface TmdbApi {
         @Path("mediaType") mediaType: TmdbMediaType,
         @Query("language") language: String
     ): TmdbMovie
+
+    @GET("trending/person/{interval}")
+    suspend fun getTrendingPeople(
+        @Header("Authorization") auth: String,
+        @Path("interval",) interval: TmdbInterval,
+        @Query("language") language: String
+    ): PeopleListResponse
+
+    @GET("{mediaType}/{interval}")
+    suspend fun getVideoList(
+        @Header("Authorization") auth: String,
+        @Path("mediaType") mediaType: TmdbMediaType,
+        @Path("interval",) interval: TmdbInterval,
+        @Query("language") language: String
+    ): VideoListResponse
+
+    @GET("trending/{mediaType}/{interval}")
+    suspend fun getImageList(
+        @Header("Authorization") auth: String,
+        @Path("mediaType") mediaType: TmdbMediaType,
+        @Path("interval",) interval: TmdbInterval,
+        @Query("language") language: String
+    ): ImageListResponse
 
     @GET("{mediaType}/{contentId}")
     suspend fun getDetails(

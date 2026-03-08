@@ -21,11 +21,18 @@ import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import com.zappyware.moviebrowser.common.ui.widgets.ImageWidgetComposable
 import com.zappyware.moviebrowser.common.ui.widgets.MovieWidgetComposable
+import com.zappyware.moviebrowser.common.ui.widgets.PeopleWidgetComposable
+import com.zappyware.moviebrowser.common.ui.widgets.VideoWidgetComposable
 import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
+import com.zappyware.moviebrowser.data.widget.ImageWidget
 import com.zappyware.moviebrowser.data.widget.MovieWidget
+import com.zappyware.moviebrowser.data.widget.PeopleWidget
+import com.zappyware.moviebrowser.data.widget.VideoWidget
 import com.zappyware.moviebrowser.data.widget.Widget
 import kotlin.math.absoluteValue
 
@@ -35,8 +42,8 @@ fun HorizontalPagerTrayWidgetComposable(
     onDetailsClicked: (Widget) -> Unit,
 ) {
     val onDetailsClickedCallback = remember(onDetailsClicked) {
-        { movieWidget: MovieWidget ->
-            onDetailsClicked(movieWidget)
+        { widget: Widget ->
+            onDetailsClicked(widget)
         }
     }
 
@@ -47,6 +54,18 @@ fun HorizontalPagerTrayWidgetComposable(
     }
 
     val pagerState = rememberPagerState(pageCount = { tray.widgets.size })
+
+    val pageSize = remember {
+        PageSize.Fixed(
+            if (tray.widgets.first() is VideoWidget) {
+                480.dp
+            } else if (tray.widgets.first() is PeopleWidget) {
+                120.dp
+            } else {
+                196.dp
+            }
+        )
+    }
 
     Column {
         Text(
@@ -63,17 +82,50 @@ fun HorizontalPagerTrayWidgetComposable(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(16.dp, vertical = 0.dp),
             pageSpacing = 24.dp,
-            pageSize = PageSize.Fixed(196.dp),
+            pageSize = pageSize,
             key = { index -> tray.widgets[index].id }
         ) { pageIndex ->
-            MovieWidgetComposable(
-                modifier = Modifier
-                    .size(196.dp, 270.dp)
-                    .graphicsLayer(pagerState, pageIndex)
-                    .dropShadow(shadowColor),
-                movieWidget = tray.widgets[pageIndex] as MovieWidget,
-                onDetailsClickedCallback,
-            )
+            when (val widget = tray.widgets[pageIndex]) {
+                is MovieWidget -> {
+                    MovieWidgetComposable(
+                        modifier = Modifier
+                            .size(196.dp, 270.dp)
+                            .graphicsLayer(pagerState, pageIndex)
+                            .dropShadow(shadowColor, 24.dp, 16.dp),
+                        widget = widget,
+                        onDetailsClickedCallback,
+                    )
+                }
+                is PeopleWidget -> {
+                    PeopleWidgetComposable(
+                        modifier = Modifier
+                            .size(120.dp, 120.dp)
+                            .graphicsLayer(pagerState, pageIndex),
+                        widget = widget,
+                        onDetailsClickedCallback,
+                    )
+                }
+                is VideoWidget -> {
+                    VideoWidgetComposable(
+                        modifier = Modifier
+                            .size(480.dp, 270.dp)
+                            .graphicsLayer(pagerState, pageIndex)
+                            .dropShadow(shadowColor, 24.dp, 16.dp),
+                        widget = widget,
+                        onDetailsClickedCallback,
+                    )
+                }
+                is ImageWidget -> {
+                    ImageWidgetComposable(
+                        modifier = Modifier
+                            .size(196.dp, 270.dp)
+                            .graphicsLayer(pagerState, pageIndex)
+                            .dropShadow(shadowColor, 24.dp, 16.dp),
+                        widget = widget,
+                        onDetailsClickedCallback,
+                    )
+                }
+            }
         }
     }
 }
@@ -95,11 +147,11 @@ fun Modifier.graphicsLayer(
         translationY = (1f - scaleY) * -270.dp.value
     }
 
-fun Modifier.dropShadow(shadowColor: Color): Modifier =
+fun Modifier.dropShadow(shadowColor: Color, shapeRadius: Dp, shadowRadius: Dp): Modifier =
     dropShadow(
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(shapeRadius),
         shadow = Shadow(
-            radius = 16.dp,
+            radius = shadowRadius,
             color = shadowColor
         ),
     )

@@ -2,7 +2,7 @@ package com.zappyware.moviebrowser.data.page
 
 import com.zappyware.moviebrowser.data.common.ContentType
 import com.zappyware.moviebrowser.data.common.Language
-import com.zappyware.moviebrowser.data.widget.CreatorWidget
+import com.zappyware.moviebrowser.data.widget.PeopleWidget
 import com.zappyware.moviebrowser.data.widget.ImageWidget
 import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.data.widget.SeasonWidget
@@ -12,7 +12,7 @@ import java.util.Date
 data class DetailPageWidget(
     val adult: Boolean,
     val backdropPath: String?,
-    val created: List<CreatorWidget>,
+    val created: List<PeopleWidget>,
     val episodeRunTime: List<Int>,
     val firstAirDate: Date?,
     val genreIds: List<String>?,

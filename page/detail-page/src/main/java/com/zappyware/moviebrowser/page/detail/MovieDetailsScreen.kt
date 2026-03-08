@@ -2,7 +2,6 @@
 
 package com.zappyware.moviebrowser.page.detail
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.LocalPlatformContext
@@ -28,7 +26,6 @@ import coil3.compose.rememberConstraintsSizeResolver
 import coil3.request.ImageRequest
 import com.zappyware.moviebrowser.common.ui.shimmer
 import com.zappyware.moviebrowser.data.MediaType
-import com.zappyware.moviebrowser.data.common.ContentType
 import com.zappyware.moviebrowser.data.page.DetailPageWidget
 import com.zappyware.moviebrowser.page.detail.composable.MovieMeta
 
@@ -103,54 +100,4 @@ fun MovieDetailsScreenUI(
             contentScale = ContentScale.FillWidth,
         )
     }
-}
-
-@Composable
-@Preview(
-    name = "phone",
-    device = "spec:width=360dp,height=640dp,dpi=480",
-    showSystemUi = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
-fun MovieDetailsScreenUIPreview() {
-    MovieDetailsScreenUI(
-        pageWidget = DetailPageWidget(
-            adult = false,
-            backdropPath = null,
-            created = emptyList(),
-            episodeRunTime = emptyList(),
-            firstAirDate = null,
-            genreIds = listOf("Action", "Adventure", "Sci-Fi"),
-            homepage = "",
-            id = "123",
-            isInProduction = false,
-            languages = emptyList(),
-            lastAirDate = null,
-            lastEpisodeToAir = null,
-            title = "Example Movie",
-            nextEpisodeToAir = null,
-            networks = emptyList(),
-            episodesCount = 0,
-            seasonsCount = 0,
-            originCountry = emptyList(),
-            originalLanguage = "",
-            originalTitle = "",
-            overview = "This is an overview of the example movie. It's full of action, adventure and sci-fi elements.",
-            popularity = 0f,
-            posterPath = "/qW4crfED8mpNDadSmMdi7ZDzhXF.jpg",
-            productionCompanies = emptyList(),
-            productionCountries = emptyList(),
-            seasons = emptyList(),
-            dubs = emptyList(),
-            status = "",
-            tagline = "",
-            type = ContentType.Scripted,
-            voteAverage = 4.5f,
-            voteCount = 6,
-            isVideo = false,
-            videos = emptyList(),
-            images = emptyList(),
-        ),
-        isFavoriteState = true,
-    ) { _, _ -> }
 }

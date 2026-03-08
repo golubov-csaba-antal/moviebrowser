@@ -8,17 +8,21 @@ import com.zappyware.moviebrowser.data.tray.ShowcaseTrayWidget
 import com.zappyware.moviebrowser.data.tray.TrayWidget
 import com.zappyware.moviebrowser.data.widget.GenreWidget
 import com.zappyware.moviebrowser.data.widget.MovieWidget
+import com.zappyware.moviebrowser.data.widget.PeopleWidget
 import com.zappyware.moviebrowser.network.INetworkService
 import com.zappyware.moviebrowser.network.tmdb.data.AUTH
 import com.zappyware.moviebrowser.network.tmdb.data.BASE_URL
 import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbMovie
 import com.zappyware.moviebrowser.network.tmdb.data.entities.toGenre
 import com.zappyware.moviebrowser.network.tmdb.data.entities.toMovie
+import com.zappyware.moviebrowser.network.tmdb.data.entities.toPeopleWidget
 import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbInterval
 import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbMediaType
+import com.zappyware.moviebrowser.network.tmdb.data.enums.toMediaType
 import com.zappyware.moviebrowser.network.tmdb.data.enums.toTmdbMediaType
 import com.zappyware.moviebrowser.network.tmdb.data.page.TmdbPage
 import com.zappyware.moviebrowser.network.tmdb.response.MovieListResponse
+import com.zappyware.moviebrowser.network.tmdb.response.PeopleListResponse
 import com.zappyware.moviebrowser.network.tmdb.util.PathFactory
 import com.zappyware.moviebrowser.network.tmdb.util.TmdbDateAdapter
 import com.zappyware.moviebrowser.network.tmdb.util.TmdbMediaTypeDeserializer
@@ -59,7 +63,7 @@ class TmdbService @Inject constructor(
                 }
         }
 
-    private suspend fun fetchWidgetList(mediaType: MediaType, serviceCall: suspend (TmdbMediaType) -> MovieListResponse): List<MovieWidget> {
+    private suspend fun fetchMovieWidgetList(mediaType: MediaType, serviceCall: suspend (TmdbMediaType) -> MovieListResponse): List<MovieWidget> {
         val tmdbMovies = serviceCall(mediaType.toTmdbMediaType()).results
         val genres = getGenres(mediaType).associateBy { it.id }
 
@@ -71,7 +75,7 @@ class TmdbService @Inject constructor(
         }
     }
 
-    private suspend fun fetchWidget(mediaType: MediaType, serviceCall: suspend (TmdbMediaType) -> TmdbMovie): MovieWidget {
+    private suspend fun fetchMovieWidget(mediaType: MediaType, serviceCall: suspend (TmdbMediaType) -> TmdbMovie): MovieWidget {
         val tmdbMovie = serviceCall(mediaType.toTmdbMediaType())
         val genres = getGenres(mediaType).associateBy { it.id }
 
@@ -79,6 +83,20 @@ class TmdbService @Inject constructor(
             mediaType = mediaType,
             genres = tmdbMovie.genreIds.takeIf { !it.isNullOrEmpty() }?.mapNotNull { genres[it]?.title }.orEmpty()
         )
+    }
+
+    private suspend fun fetchPeopleWidgetList(serviceCall: suspend () -> PeopleListResponse): List<PeopleWidget> {
+        val tmdbPeople = serviceCall().results
+        return tmdbPeople.map { tmdbPerson ->
+            tmdbPerson.toPeopleWidget(
+                fetchGenresCall = { mediaType, genreIds ->
+                    mediaType?.let { type ->
+                        val genres = getGenres(type.toMediaType()).associateBy { it.id }
+                        genreIds.takeIf { !it.isNullOrEmpty() }?.mapNotNull { genres[it]?.title }.orEmpty()
+                    } ?: emptyList()
+                }
+            )
+        }
     }
 
     private suspend fun fetchPage(mediaType: MediaType, serviceCall: suspend (TmdbMediaType) -> TmdbPage): PageWidget {
@@ -96,42 +114,63 @@ class TmdbService @Inject constructor(
             HorizontalPagerTrayWidget(
                 id = "1",
                 title = "Daily trending movies",
-                widgets = fetchWidgetList(MediaType.MOVIE) { mediaType ->
+                widgets = fetchMovieWidgetList(MediaType.MOVIE) { mediaType ->
                     tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.DAY, language)
                 },
             ),
             HorizontalPagerTrayWidget(
                 id = "2",
                 title = "Daily trending shows",
-                widgets = fetchWidgetList(MediaType.SHOW) { mediaType ->
+                widgets = fetchMovieWidgetList(MediaType.SHOW) { mediaType ->
                     tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.DAY, language)
                 },
             ),
             ShowcaseTrayWidget(
                 id = "3",
                 title = "Latest show",
-                widget = fetchWidget(MediaType.SHOW) { mediaType ->
+                widget = fetchMovieWidget(MediaType.SHOW) { mediaType ->
                     tmdbApi.getLatest(AUTH, mediaType, language)
                 },
             ),
             HorizontalPagerTrayWidget(
                 id = "4",
-                title = "Weekly trending movies",
-                widgets = fetchWidgetList(MediaType.MOVIE) { mediaType ->
+                title = "TV Show videos",
+                widgets = fetchMovieWidgetList(MediaType.SHOW) { mediaType ->
                     tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.WEEK, language)
                 },
             ),
             HorizontalPagerTrayWidget(
                 id = "5",
+                title = "TV show images",
+                widgets = fetchMovieWidgetList(MediaType.SHOW) { mediaType ->
+                    tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.WEEK, language)
+                },
+            ),
+            HorizontalPagerTrayWidget(
+                id = "6",
+                title = "Trending People of the Week",
+                widgets = fetchPeopleWidgetList {
+                    tmdbApi.getTrendingPeople(AUTH, TmdbInterval.WEEK, language)
+                },
+            ),
+            HorizontalPagerTrayWidget(
+                id = "7",
+                title = "Weekly trending movies",
+                widgets = fetchMovieWidgetList(MediaType.MOVIE) { mediaType ->
+                    tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.WEEK, language)
+                },
+            ),
+            HorizontalPagerTrayWidget(
+                id = "8",
                 title = "Weekly trending shows",
-                widgets = fetchWidgetList(MediaType.SHOW) { mediaType ->
+                widgets = fetchMovieWidgetList(MediaType.SHOW) { mediaType ->
                     tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.WEEK, language)
                 },
             ),
             ShowcaseTrayWidget(
-                id = "6",
+                id = "9",
                 title = "Latest movie",
-                widget = fetchWidget(MediaType.MOVIE) { mediaType ->
+                widget = fetchMovieWidget(MediaType.MOVIE) { mediaType ->
                     tmdbApi.getLatest(AUTH, mediaType, language)
                 },
             ),

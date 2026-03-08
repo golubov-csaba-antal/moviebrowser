@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName
 import com.zappyware.moviebrowser.data.MediaType
 import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.network.tmdb.data.coverUrl
+import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbMediaType
+import com.zappyware.moviebrowser.network.tmdb.data.enums.toMediaType
 import com.zappyware.moviebrowser.network.tmdb.data.smallCoverUrl
 
 data class TmdbMovie(
@@ -47,11 +49,25 @@ data class TmdbMovie(
     @SerializedName("vote_count")
     val voteCount: Int,
 
+    @SerializedName("media_type")
+    val mediaType: TmdbMediaType?,
+
 )
 
 fun TmdbMovie.toMovie(mediaType: MediaType, genres: List<String>): MovieWidget = MovieWidget(
     id = id,
     mediaType = mediaType,
+    title = title,
+    genres = genres.joinToString(", ") { it.lowercase() },
+    overview = overview,
+    smallCoverUrl = posterPath?.let { smallCoverUrl(it) }.orEmpty(),
+    coverUrl = posterPath?.let { coverUrl(it) }.orEmpty(),
+    rating = voteAverage,
+)
+
+fun TmdbMovie.toMovie(genres: List<String>): MovieWidget = MovieWidget(
+    id = id,
+    mediaType = mediaType?.toMediaType() ?: MediaType.MOVIE,
     title = title,
     genres = genres.joinToString(", ") { it.lowercase() },
     overview = overview,

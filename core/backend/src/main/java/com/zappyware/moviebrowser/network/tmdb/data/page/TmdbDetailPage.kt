@@ -15,11 +15,11 @@ import com.zappyware.moviebrowser.network.tmdb.data.common.TmdbSeason
 import com.zappyware.moviebrowser.network.tmdb.data.common.toLanguage
 import com.zappyware.moviebrowser.network.tmdb.data.common.toSeasonWidget
 import com.zappyware.moviebrowser.network.tmdb.data.coverUrl
-import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbCreator
+import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbPeople
 import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbImage
 import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbMovie
 import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbVideo
-import com.zappyware.moviebrowser.network.tmdb.data.entities.toCreatorWidget
+import com.zappyware.moviebrowser.network.tmdb.data.entities.toPeopleWidget
 import com.zappyware.moviebrowser.network.tmdb.data.entities.toImageWidget
 import com.zappyware.moviebrowser.network.tmdb.data.entities.toMovie
 import com.zappyware.moviebrowser.network.tmdb.data.entities.toVideoWidget
@@ -34,7 +34,7 @@ data class TmdbDetailPage(
     val backdropPath: String?,
 
     @SerializedName("created_by")
-    val created: List<TmdbCreator>?,
+    val created: List<TmdbPeople>?,
 
     @SerializedName("episode_run_time")
     val episodeRunTime: List<Int>?,
@@ -144,7 +144,7 @@ data class TmdbDetailPage(
         DetailPageWidget(
             adult = adult,
             backdropPath = backdropPath?.let { coverUrl(it) },
-            created = created?.map { it.toCreatorWidget() } ?: emptyList(),
+            created = created?.map { it.toPeopleWidget() } ?: emptyList(),
             episodeRunTime = episodeRunTime ?: emptyList(),
             firstAirDate = firstAirDate,
             genreIds = genreIds,

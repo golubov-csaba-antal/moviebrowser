@@ -11,4 +11,4 @@ data class ImageWidget(
     val imagePath: String,
     val voteAverage: Float,
     val voteCount: Int,
-)
+): Widget(imagePath)

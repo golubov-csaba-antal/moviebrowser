@@ -5,16 +5,19 @@ import com.zappyware.moviebrowser.data.MediaType
 enum class TmdbMediaType(val mediaType: String) {
     MOVIE("movie"),
     SHOW("tv"),
+    PERSON("person"),
 }
 
 fun TmdbMediaType.toMediaType(): MediaType =
     when(this) {
         TmdbMediaType.MOVIE -> MediaType.MOVIE
         TmdbMediaType.SHOW -> MediaType.SHOW
+        TmdbMediaType.PERSON -> MediaType.PERSON
     }
 
 fun MediaType.toTmdbMediaType(): TmdbMediaType =
     when(this) {
         MediaType.MOVIE -> TmdbMediaType.MOVIE
         MediaType.SHOW -> TmdbMediaType.SHOW
+        MediaType.PERSON -> TmdbMediaType.PERSON
     }

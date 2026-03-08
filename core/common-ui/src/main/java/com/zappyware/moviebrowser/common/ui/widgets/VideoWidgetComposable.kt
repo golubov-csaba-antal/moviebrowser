@@ -1,15 +1,14 @@
 package com.zappyware.moviebrowser.common.ui.widgets
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,18 +18,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import coil3.compose.AsyncImage
-import com.zappyware.moviebrowser.common.ui.FavoriteIcon
-import com.zappyware.moviebrowser.data.widget.MovieWidget
+import com.zappyware.moviebrowser.data.widget.VideoWidget
 import com.zappyware.moviebrowser.data.widget.Widget
 
 @Composable
-fun MovieWidgetComposable(
+fun VideoWidgetComposable(
     modifier: Modifier,
-    widget: MovieWidget,
+    widget: VideoWidget,
     onDetailsClicked: (Widget) -> Unit,
 ) {
     Box(
@@ -39,21 +35,13 @@ fun MovieWidgetComposable(
                 onDetailsClicked(widget)
             },
     ) {
-        AsyncImage(
-            model = widget.smallCoverUrl,
-            contentDescription = null,
-            contentScale = ContentScale.FillWidth,
+        // symbolies the image as it's missing from the response
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .zIndex(1.0f)
+                .background(Color.DarkGray)
                 .clip(RoundedCornerShape(24.dp)),
-        )
-        FavoriteIcon(
-            modifier = Modifier
-                .padding(all = 16.dp)
-                .zIndex(2.0f)
-                .align(Alignment.TopStart),
-            contentId = widget.id,
         )
         Column(
             modifier = Modifier
@@ -72,7 +60,7 @@ fun MovieWidgetComposable(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = widget.genres,
+                text = "${widget.type}, ${widget.site}",
                 style = MaterialTheme.typography.labelSmall.copy(
                     shadow = Shadow(
                         color = Color.Black, offset = Offset(5f, 5f), blurRadius = 5f
@@ -80,8 +68,6 @@ fun MovieWidgetComposable(
                 ),
                 color = Color.White,
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            LinearProgressIndicator(progress = { widget.rating / 10.0f }, modifier = Modifier.fillMaxWidth(), drawStopIndicator = { })
         }
     }
 }
