@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.zappyware.moviebrowser.common.ui.Table
 import com.zappyware.moviebrowser.data.page.DetailPageWidget
@@ -14,6 +15,7 @@ import java.util.Locale
 @Composable
 fun MovieMeta(
     pageWidget: DetailPageWidget?,
+    horizontalPadding: Dp = 16.dp,
 ) {
     pageWidget?.let { widget ->
         val (headers, values) = remember(widget) {
@@ -64,7 +66,7 @@ fun MovieMeta(
 
         Table(
             modifier = Modifier.fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = horizontalPadding, vertical = 16.dp),
             headers = headers,
             values = values
         )

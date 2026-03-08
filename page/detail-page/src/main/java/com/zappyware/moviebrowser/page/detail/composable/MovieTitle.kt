@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.zappyware.moviebrowser.common.ui.R
 import com.zappyware.moviebrowser.data.page.DetailPageWidget
@@ -21,12 +22,15 @@ import com.zappyware.moviebrowser.data.page.DetailPageWidget
 fun MovieTitle(
     pageWidget: DetailPageWidget?,
     isFavorite: Boolean,
-    onFavoriteClicked: (String,Boolean) -> Unit,
+    onFavoriteClicked: (String, Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    horizontalPadding: Dp = 16.dp,
 ) {
     pageWidget?.let {
         Row(
-            modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = horizontalPadding),
             verticalAlignment = Alignment.Top,
         ) {
             Text(

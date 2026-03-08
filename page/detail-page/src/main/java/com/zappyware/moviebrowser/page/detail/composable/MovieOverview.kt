@@ -6,18 +6,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.zappyware.moviebrowser.data.page.DetailPageWidget
 
 @Composable
 fun MovieOverview(
-    pageWidget: DetailPageWidget?
+    pageWidget: DetailPageWidget?,
+    horizontalPadding: Dp = 16.dp,
 ) {
     pageWidget?.let {
         pageWidget.tagline.takeIf { it.isNotEmpty() }?.let { tagline ->
             Text(
                 modifier = Modifier
-                    .padding(vertical = 8.dp, horizontal = 16.dp),
+                    .padding(vertical = 8.dp, horizontal = horizontalPadding),
                 text = tagline,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -27,7 +29,7 @@ fun MovieOverview(
         pageWidget.overview.takeIf { it.isNotEmpty() }?.let { overview ->
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = horizontalPadding),
                 text = overview,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface,

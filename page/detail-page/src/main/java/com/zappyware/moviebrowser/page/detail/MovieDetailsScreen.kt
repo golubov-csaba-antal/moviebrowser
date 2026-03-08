@@ -85,14 +85,14 @@ fun MovieDetailsScreenUI(
     val progress = (sheetOffset / peekOffsetPx).coerceIn(0f, 1f)
 
     // Interpolate outer padding and corners based on scroll progress
-    val horizontalPadding = (16 * progress).dp
+    val horizontalPadding = (20 * progress).dp
     val cornerRadius = (24 * progress).dp
     
     // Interpolate inner padding to counteract the outer padding change.
     // When progress = 1 (peeked), inner padding is 8dp. 
     // When progress = 0 (expanded), inner padding is 24dp (8dp base + 16dp extra).
     // This keeps the total offset from screen edge constant at 16 + 8 = 24dp.
-    val innerHorizontalPadding = 24.dp - horizontalPadding
+    val innerHorizontalPadding = 40.dp - horizontalPadding
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -121,18 +121,21 @@ fun MovieDetailsScreenUI(
                         .fillMaxWidth()
                         .defaultMinSize(minHeight = screenHeight)
                         .verticalScroll(scrollState)
-                        .padding(horizontal = innerHorizontalPadding, vertical = 32.dp)
+                        .padding(vertical = 32.dp)
                 ) {
                     MovieTitle(
                         pageWidget = pageWidget,
                         isFavorite = isFavoriteState,
-                        onFavoriteClicked = onFavoriteClicked
+                        onFavoriteClicked = onFavoriteClicked,
+                        horizontalPadding = innerHorizontalPadding
                     )
                     MovieOverview(
                         pageWidget = pageWidget,
+                        horizontalPadding = innerHorizontalPadding
                     )
                     MovieMeta(
                         pageWidget = pageWidget,
+                        horizontalPadding = innerHorizontalPadding
                     )
                     MovieCreator(
                         pageWidget = pageWidget,
