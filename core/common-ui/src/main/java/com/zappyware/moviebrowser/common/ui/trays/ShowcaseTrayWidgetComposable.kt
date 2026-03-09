@@ -74,7 +74,7 @@ fun ShowcaseTrayWidgetComposable(
                 },
         ) {
             AsyncImage(
-                model = movieWidget.coverUrl,
+                model = movieWidget.posterUrl,
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
@@ -105,7 +105,7 @@ fun ShowcaseTrayWidgetComposable(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = movieWidget.genres,
+                    text = movieWidget.genre,
                     style = MaterialTheme.typography.labelSmall.copy(
                         shadow = Shadow(
                             color = Color.Black, offset = Offset(5f, 5f), blurRadius = 5f
@@ -114,7 +114,7 @@ fun ShowcaseTrayWidgetComposable(
                     color = Color.White,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                LinearProgressIndicator(progress = { movieWidget.rating / 10.0f }, modifier = Modifier.fillMaxWidth(), drawStopIndicator = { })
+                LinearProgressIndicator(progress = { movieWidget.voteAverage / 10.0f }, modifier = Modifier.fillMaxWidth(), drawStopIndicator = { })
             }
         }
     }

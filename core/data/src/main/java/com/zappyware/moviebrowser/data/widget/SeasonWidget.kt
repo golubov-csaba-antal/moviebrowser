@@ -9,6 +9,7 @@ data class SeasonWidget(
     val name: String,
     val overview: String,
     val posterPath: String?,
+    val smallPosterPath: String?,
     val seasonNumber: Int,
     val voteAverage: Float,
 ): Widget(id)

@@ -3,6 +3,7 @@ package com.zappyware.moviebrowser.network.tmdb.data.common
 import com.google.gson.annotations.SerializedName
 import com.zappyware.moviebrowser.data.widget.SeasonWidget
 import com.zappyware.moviebrowser.network.tmdb.data.coverUrl
+import com.zappyware.moviebrowser.network.tmdb.data.smallCoverUrl
 import java.util.Date
 
 data class TmdbSeason(
@@ -32,6 +33,7 @@ fun TmdbSeason.toSeasonWidget(): SeasonWidget =
         name = name,
         overview = overview,
         posterPath = posterPath?.let { coverUrl(it) },
+        smallPosterPath = posterPath?.let { smallCoverUrl(it) },
         seasonNumber = seasonNumber,
         voteAverage = voteAverage,
     )

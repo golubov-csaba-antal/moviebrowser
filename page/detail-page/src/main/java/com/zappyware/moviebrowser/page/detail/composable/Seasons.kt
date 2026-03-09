@@ -8,21 +8,22 @@ import com.zappyware.moviebrowser.data.page.DetailPageWidget
 import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
 
 @Composable
-fun MovieRelatedImages(
+fun Seasons(
     pageWidget: DetailPageWidget?,
 ) {
     if (pageWidget == null) return
 
-    val tray = remember(pageWidget.images) {
-        val filteredImages = pageWidget.images.filter { it.category == "posters" }
-        if (filteredImages.isNotEmpty()) {
+    val tray = remember(pageWidget.seasons) {
+        if (pageWidget.seasons.isEmpty()) {
+            return@remember null
+        } else {
             HorizontalPagerTrayWidget(
-                id = "related_images_${pageWidget.id}",
-                title = "Related images",
-                widgets = filteredImages,
-                orientation = Orientation.Portrait,
+                id = "seasons",
+                title = "Seasons",
+                widgets = pageWidget.seasons,
+                orientation = Orientation.Landscape,
             )
-        } else null
+        }
     }
 
     tray?.let {

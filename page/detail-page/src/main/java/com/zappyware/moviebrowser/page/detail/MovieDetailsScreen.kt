@@ -41,6 +41,7 @@ import com.zappyware.moviebrowser.page.detail.composable.MovieOverview
 import com.zappyware.moviebrowser.page.detail.composable.MovieRelatedImages
 import com.zappyware.moviebrowser.page.detail.composable.MovieRelatedVideos
 import com.zappyware.moviebrowser.page.detail.composable.MovieTitle
+import com.zappyware.moviebrowser.page.detail.composable.Seasons
 
 @Composable
 fun MovieDetailsScreen(viewModel: MovieDetailsViewModel, movieId: String, mediaType: MediaType) {
@@ -138,6 +139,9 @@ fun MovieDetailsScreenUI(
                         horizontalPadding = innerHorizontalPadding
                     )
                     MovieCreator(
+                        pageWidget = pageWidget,
+                    )
+                    Seasons(
                         pageWidget = pageWidget,
                     )
                     MovieRelatedImages(

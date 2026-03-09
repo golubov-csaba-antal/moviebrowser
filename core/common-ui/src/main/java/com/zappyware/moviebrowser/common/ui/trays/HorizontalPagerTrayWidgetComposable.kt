@@ -25,15 +25,20 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.zappyware.moviebrowser.common.ui.widgets.ImageWidgetComposable
-import com.zappyware.moviebrowser.common.ui.widgets.MovieWidgetComposable
+import com.zappyware.moviebrowser.common.ui.widgets.MovieWidgetCircularComposable
+import com.zappyware.moviebrowser.common.ui.widgets.MovieWidgetLandscapeComposable
+import com.zappyware.moviebrowser.common.ui.widgets.MovieWidgetPortraitComposable
 import com.zappyware.moviebrowser.common.ui.widgets.PeopleWidgetComposable
+import com.zappyware.moviebrowser.common.ui.widgets.SeasonWidgetComposable
 import com.zappyware.moviebrowser.common.ui.widgets.VideoWidgetComposable
+import com.zappyware.moviebrowser.data.common.Orientation
 import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
 import com.zappyware.moviebrowser.data.tray.trayItemHeight
 import com.zappyware.moviebrowser.data.tray.trayItemWidth
 import com.zappyware.moviebrowser.data.widget.ImageWidget
 import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.data.widget.PeopleWidget
+import com.zappyware.moviebrowser.data.widget.SeasonWidget
 import com.zappyware.moviebrowser.data.widget.VideoWidget
 import com.zappyware.moviebrowser.data.widget.Widget
 import kotlin.math.absoluteValue
@@ -80,14 +85,38 @@ fun HorizontalPagerTrayWidgetComposable(
         ) { pageIndex ->
             when (val widget = tray.widgets[pageIndex]) {
                 is MovieWidget -> {
-                    MovieWidgetComposable(
-                        modifier = Modifier
-                            .size(trayItemWidth.dp, trayItemHeight.dp)
-                            .graphicsLayer(pagerState, pageIndex, trayItemHeight)
-                            .dropShadow(shadowColor, 24.dp, 16.dp),
-                        widget = widget,
-                        onDetailsClickedCallback,
-                    )
+                    when (tray.orientation) {
+                        Orientation.Portrait -> {
+                            MovieWidgetPortraitComposable(
+                                modifier = Modifier
+                                    .size(trayItemWidth.dp, trayItemHeight.dp)
+                                    .graphicsLayer(pagerState, pageIndex, trayItemHeight)
+                                    .dropShadow(shadowColor, 24.dp, 16.dp),
+                                widget = widget,
+                                onDetailsClickedCallback,
+                            )
+                        }
+                        Orientation.Landscape -> {
+                            MovieWidgetLandscapeComposable(
+                                modifier = Modifier
+                                    .size(trayItemWidth.dp, trayItemHeight.dp)
+                                    .graphicsLayer(pagerState, pageIndex, trayItemHeight)
+                                    .dropShadow(shadowColor, 24.dp, 16.dp),
+                                widget = widget,
+                                onDetailsClickedCallback,
+                            )
+                        }
+                        Orientation.Circular -> {
+                            MovieWidgetCircularComposable(
+                                modifier = Modifier
+                                    .size(trayItemWidth.dp, trayItemHeight.dp)
+                                    .graphicsLayer(pagerState, pageIndex, trayItemHeight)
+                                    .dropShadow(shadowColor, 24.dp, 16.dp),
+                                widget = widget,
+                                onDetailsClickedCallback,
+                            )
+                        }
+                    }
                 }
                 is PeopleWidget -> {
                     PeopleWidgetComposable(
@@ -110,6 +139,16 @@ fun HorizontalPagerTrayWidgetComposable(
                 }
                 is ImageWidget -> {
                     ImageWidgetComposable(
+                        modifier = Modifier
+                            .size(trayItemWidth.dp, trayItemHeight.dp)
+                            .graphicsLayer(pagerState, pageIndex, trayItemHeight)
+                            .dropShadow(shadowColor, 24.dp, 16.dp),
+                        widget = widget,
+                        onDetailsClickedCallback,
+                    )
+                }
+                is SeasonWidget -> {
+                    SeasonWidgetComposable(
                         modifier = Modifier
                             .size(trayItemWidth.dp, trayItemHeight.dp)
                             .graphicsLayer(pagerState, pageIndex, trayItemHeight)
