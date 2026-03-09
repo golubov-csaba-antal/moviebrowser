@@ -3,6 +3,7 @@ package com.zappyware.moviebrowser.page.detail.composable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.zappyware.moviebrowser.common.ui.trays.HorizontalPagerTrayWidgetComposable
+import com.zappyware.moviebrowser.data.common.Orientation
 import com.zappyware.moviebrowser.data.page.DetailPageWidget
 import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
 
@@ -19,6 +20,7 @@ fun MovieRelatedImages(
                 id = "related_images_${pageWidget.id}",
                 title = "Related images",
                 widgets = filteredImages,
+                orientation = Orientation.Landscape,
             )
         } else null
     }

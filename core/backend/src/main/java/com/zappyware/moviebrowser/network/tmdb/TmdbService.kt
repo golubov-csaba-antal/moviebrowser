@@ -2,27 +2,34 @@ package com.zappyware.moviebrowser.network.tmdb
 
 import com.google.gson.Gson
 import com.zappyware.moviebrowser.data.MediaType
+import com.zappyware.moviebrowser.data.common.Orientation
 import com.zappyware.moviebrowser.data.page.PageWidget
 import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
 import com.zappyware.moviebrowser.data.tray.ShowcaseTrayWidget
 import com.zappyware.moviebrowser.data.tray.TrayWidget
 import com.zappyware.moviebrowser.data.widget.GenreWidget
+import com.zappyware.moviebrowser.data.widget.ImageWidget
 import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.data.widget.PeopleWidget
+import com.zappyware.moviebrowser.data.widget.VideoWidget
 import com.zappyware.moviebrowser.network.INetworkService
 import com.zappyware.moviebrowser.network.tmdb.data.AUTH
 import com.zappyware.moviebrowser.network.tmdb.data.BASE_URL
 import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbMovie
 import com.zappyware.moviebrowser.network.tmdb.data.entities.toGenre
+import com.zappyware.moviebrowser.network.tmdb.data.entities.toImageWidget
 import com.zappyware.moviebrowser.network.tmdb.data.entities.toMovie
 import com.zappyware.moviebrowser.network.tmdb.data.entities.toPeopleWidget
+import com.zappyware.moviebrowser.network.tmdb.data.entities.toVideoWidget
 import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbInterval
 import com.zappyware.moviebrowser.network.tmdb.data.enums.TmdbMediaType
 import com.zappyware.moviebrowser.network.tmdb.data.enums.toMediaType
 import com.zappyware.moviebrowser.network.tmdb.data.enums.toTmdbMediaType
 import com.zappyware.moviebrowser.network.tmdb.data.page.TmdbPage
+import com.zappyware.moviebrowser.network.tmdb.response.ImageListResponse
 import com.zappyware.moviebrowser.network.tmdb.response.MovieListResponse
 import com.zappyware.moviebrowser.network.tmdb.response.PeopleListResponse
+import com.zappyware.moviebrowser.network.tmdb.response.VideoListResponse
 import com.zappyware.moviebrowser.network.tmdb.util.PathFactory
 import com.zappyware.moviebrowser.network.tmdb.util.TmdbDateAdapter
 import com.zappyware.moviebrowser.network.tmdb.util.TmdbMediaTypeDeserializer
@@ -99,6 +106,16 @@ class TmdbService @Inject constructor(
         }
     }
 
+    private suspend fun fetchVideoWidgetList(mediaType: MediaType, serviceCall: suspend (TmdbMediaType) -> VideoListResponse): List<VideoWidget> {
+        val tmdbVideos = serviceCall(mediaType.toTmdbMediaType()).results
+        return tmdbVideos.map { it.toVideoWidget() }
+    }
+
+    private suspend fun fetchImageWidgetList(mediaType: MediaType, serviceCall: suspend (TmdbMediaType) -> ImageListResponse): List<ImageWidget> {
+        val tmdbImages = serviceCall(mediaType.toTmdbMediaType()).results
+        return tmdbImages.map { it.toImageWidget() }
+    }
+
     private suspend fun fetchPage(mediaType: MediaType, serviceCall: suspend (TmdbMediaType) -> TmdbPage): PageWidget {
         val tmdbPage = serviceCall(mediaType.toTmdbMediaType())
         val genres = getGenres(mediaType).associateBy { it.id }
@@ -117,6 +134,7 @@ class TmdbService @Inject constructor(
                 widgets = fetchMovieWidgetList(MediaType.MOVIE) { mediaType ->
                     tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.DAY, language)
                 },
+                orientation = Orientation.Portrait,
             ),
             HorizontalPagerTrayWidget(
                 id = "2",
@@ -124,6 +142,7 @@ class TmdbService @Inject constructor(
                 widgets = fetchMovieWidgetList(MediaType.SHOW) { mediaType ->
                     tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.DAY, language)
                 },
+                orientation = Orientation.Portrait,
             ),
             ShowcaseTrayWidget(
                 id = "3",
@@ -134,17 +153,19 @@ class TmdbService @Inject constructor(
             ),
             HorizontalPagerTrayWidget(
                 id = "4",
-                title = "TV Show videos",
-                widgets = fetchMovieWidgetList(MediaType.SHOW) { mediaType ->
-                    tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.WEEK, language)
+                title = "Now playing (movies)",
+                widgets = fetchMovieWidgetList(MediaType.MOVIE) { mediaType ->
+                    tmdbApi.getNowPlaying(AUTH, mediaType, language)
                 },
+                orientation = Orientation.Landscape,
             ),
             HorizontalPagerTrayWidget(
                 id = "5",
-                title = "TV show images",
+                title = "Top rated TV shows",
                 widgets = fetchMovieWidgetList(MediaType.SHOW) { mediaType ->
-                    tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.WEEK, language)
+                    tmdbApi.getTopRated(AUTH, mediaType, language)
                 },
+                orientation = Orientation.Landscape,
             ),
             HorizontalPagerTrayWidget(
                 id = "6",
@@ -152,6 +173,7 @@ class TmdbService @Inject constructor(
                 widgets = fetchPeopleWidgetList {
                     tmdbApi.getTrendingPeople(AUTH, TmdbInterval.WEEK, language)
                 },
+                orientation = Orientation.Circular,
             ),
             HorizontalPagerTrayWidget(
                 id = "7",
@@ -159,6 +181,7 @@ class TmdbService @Inject constructor(
                 widgets = fetchMovieWidgetList(MediaType.MOVIE) { mediaType ->
                     tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.WEEK, language)
                 },
+                orientation = Orientation.Landscape,
             ),
             HorizontalPagerTrayWidget(
                 id = "8",
@@ -166,6 +189,7 @@ class TmdbService @Inject constructor(
                 widgets = fetchMovieWidgetList(MediaType.SHOW) { mediaType ->
                     tmdbApi.getTrending(AUTH, mediaType, TmdbInterval.WEEK, language)
                 },
+                orientation = Orientation.Landscape,
             ),
             ShowcaseTrayWidget(
                 id = "9",
@@ -173,6 +197,38 @@ class TmdbService @Inject constructor(
                 widget = fetchMovieWidget(MediaType.MOVIE) { mediaType ->
                     tmdbApi.getLatest(AUTH, mediaType, language)
                 },
+            ),
+            HorizontalPagerTrayWidget(
+                id = "10",
+                title = "Upcoming movies",
+                widgets = fetchMovieWidgetList(MediaType.MOVIE) { mediaType ->
+                    tmdbApi.getUpcoming(AUTH, mediaType, language)
+                },
+                orientation = Orientation.Portrait,
+            ),
+            /*HorizontalPagerTrayWidget(
+                id = "11",
+                title = "Upcoming TV shows",
+                widgets = fetchMovieWidgetList(MediaType.SHOW) { mediaType ->
+                    tmdbApi.getUpcoming(AUTH, mediaType, language)
+                },
+                orientation = Orientation.Portrait,
+            ),*/
+            HorizontalPagerTrayWidget(
+                id = "12",
+                title = "Popular movies",
+                widgets = fetchMovieWidgetList(MediaType.MOVIE) { mediaType ->
+                    tmdbApi.getPopular(AUTH, mediaType, language)
+                },
+                orientation = Orientation.Portrait,
+            ),
+            HorizontalPagerTrayWidget(
+                id = "13",
+                title = "Popular TV shows",
+                widgets = fetchMovieWidgetList(MediaType.SHOW) { mediaType ->
+                    tmdbApi.getPopular(AUTH, mediaType, language)
+                },
+                orientation = Orientation.Portrait,
             ),
         )
     }

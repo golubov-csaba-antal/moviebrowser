@@ -29,6 +29,8 @@ import com.zappyware.moviebrowser.common.ui.widgets.MovieWidgetComposable
 import com.zappyware.moviebrowser.common.ui.widgets.PeopleWidgetComposable
 import com.zappyware.moviebrowser.common.ui.widgets.VideoWidgetComposable
 import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
+import com.zappyware.moviebrowser.data.tray.trayItemHeight
+import com.zappyware.moviebrowser.data.tray.trayItemWidth
 import com.zappyware.moviebrowser.data.widget.ImageWidget
 import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.data.widget.PeopleWidget
@@ -55,17 +57,8 @@ fun HorizontalPagerTrayWidgetComposable(
 
     val pagerState = rememberPagerState(pageCount = { tray.widgets.size })
 
-    val pageSize = remember {
-        PageSize.Fixed(
-            if (tray.widgets.first() is VideoWidget) {
-                224.dp
-            } else if (tray.widgets.first() is PeopleWidget) {
-                120.dp
-            } else {
-                196.dp
-            }
-        )
-    }
+    val trayItemWidth = remember { tray.trayItemWidth }
+    val trayItemHeight = remember { tray.trayItemHeight }
 
     Column {
         Text(
@@ -82,15 +75,15 @@ fun HorizontalPagerTrayWidgetComposable(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(16.dp, vertical = 0.dp),
             pageSpacing = 24.dp,
-            pageSize = pageSize,
+            pageSize = PageSize.Fixed(trayItemWidth.dp),
             key = { index -> tray.widgets[index].id }
         ) { pageIndex ->
             when (val widget = tray.widgets[pageIndex]) {
                 is MovieWidget -> {
                     MovieWidgetComposable(
                         modifier = Modifier
-                            .size(196.dp, 270.dp)
-                            .graphicsLayer(pagerState, pageIndex)
+                            .size(trayItemWidth.dp, trayItemHeight.dp)
+                            .graphicsLayer(pagerState, pageIndex, trayItemHeight)
                             .dropShadow(shadowColor, 24.dp, 16.dp),
                         widget = widget,
                         onDetailsClickedCallback,
@@ -99,8 +92,8 @@ fun HorizontalPagerTrayWidgetComposable(
                 is PeopleWidget -> {
                     PeopleWidgetComposable(
                         modifier = Modifier
-                            .size(120.dp, 120.dp)
-                            .graphicsLayer(pagerState, pageIndex),
+                            .size(trayItemWidth.dp, trayItemHeight.dp)
+                            .graphicsLayer(pagerState, pageIndex, trayItemHeight),
                         widget = widget,
                         onDetailsClickedCallback,
                     )
@@ -108,8 +101,8 @@ fun HorizontalPagerTrayWidgetComposable(
                 is VideoWidget -> {
                     VideoWidgetComposable(
                         modifier = Modifier
-                            .size(224.dp, 126.dp)
-                            .graphicsLayer(pagerState, pageIndex)
+                            .size(trayItemWidth.dp, trayItemHeight.dp)
+                            .graphicsLayer(pagerState, pageIndex, trayItemHeight)
                             .dropShadow(shadowColor, 24.dp, 16.dp),
                         widget = widget,
                         onDetailsClickedCallback,
@@ -118,8 +111,8 @@ fun HorizontalPagerTrayWidgetComposable(
                 is ImageWidget -> {
                     ImageWidgetComposable(
                         modifier = Modifier
-                            .size(196.dp, 270.dp)
-                            .graphicsLayer(pagerState, pageIndex)
+                            .size(trayItemWidth.dp, trayItemHeight.dp)
+                            .graphicsLayer(pagerState, pageIndex, trayItemHeight)
                             .dropShadow(shadowColor, 24.dp, 16.dp),
                         widget = widget,
                         onDetailsClickedCallback,
@@ -132,7 +125,8 @@ fun HorizontalPagerTrayWidgetComposable(
 
 fun Modifier.graphicsLayer(
     pagerState: PagerState,
-    pageIndex: Int
+    pageIndex: Int,
+    pageHeight: Float,
 ): Modifier =
     graphicsLayer {
         val pageOffset =
@@ -144,7 +138,7 @@ fun Modifier.graphicsLayer(
         )
         scaleX = scale
         scaleY = scale
-        translationY = (1f - scaleY) * -270.dp.value
+        translationY = (1f - scaleY) * -pageHeight
     }
 
 fun Modifier.dropShadow(shadowColor: Color, shapeRadius: Dp, shadowRadius: Dp): Modifier =

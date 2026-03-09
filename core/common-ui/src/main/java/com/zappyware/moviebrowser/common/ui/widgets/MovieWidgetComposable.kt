@@ -42,7 +42,7 @@ fun MovieWidgetComposable(
         AsyncImage(
             model = widget.smallCoverUrl,
             contentDescription = null,
-            contentScale = ContentScale.FillWidth,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
                 .zIndex(1.0f)

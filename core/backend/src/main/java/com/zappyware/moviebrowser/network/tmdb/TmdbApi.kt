@@ -61,6 +61,34 @@ interface TmdbApi {
         @Query("language") language: String
     ): ImageListResponse
 
+    @GET("{mediaType}/now_playing")
+    suspend fun getNowPlaying(
+        @Header("Authorization") auth: String,
+        @Path("mediaType") mediaType: TmdbMediaType,
+        @Query("language") language: String
+    ): MovieListResponse
+
+    @GET("{mediaType}/top_rated")
+    suspend fun getTopRated(
+        @Header("Authorization") auth: String,
+        @Path("mediaType") mediaType: TmdbMediaType,
+        @Query("language") language: String
+    ): MovieListResponse
+
+    @GET("{mediaType}/upcoming")
+    suspend fun getUpcoming(
+        @Header("Authorization") auth: String,
+        @Path("mediaType") mediaType: TmdbMediaType,
+        @Query("language") language: String
+    ): MovieListResponse
+
+    @GET("{mediaType}/popular")
+    suspend fun getPopular(
+        @Header("Authorization") auth: String,
+        @Path("mediaType") mediaType: TmdbMediaType,
+        @Query("language") language: String
+    ): MovieListResponse
+
     @GET("{mediaType}/{contentId}")
     suspend fun getDetails(
         @Header("Authorization") auth: String,

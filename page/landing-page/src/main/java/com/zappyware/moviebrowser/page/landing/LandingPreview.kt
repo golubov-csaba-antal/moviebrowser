@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import com.zappyware.moviebrowser.common.ui.trays.HorizontalPagerTrayWidgetComposable
 import com.zappyware.moviebrowser.data.MediaType
+import com.zappyware.moviebrowser.data.common.Orientation
 import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
 import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.network.tmdb.data.coverUrl
@@ -50,7 +51,8 @@ fun LandingPreview() {
         HorizontalPagerTrayWidget(
             id = "1",
             title = "Trending movies",
-            widgets = previewMovies.value
+            widgets = previewMovies.value,
+                    orientation = Orientation.Landscape,
         )
     }
     HorizontalPagerTrayWidgetComposable(
