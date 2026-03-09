@@ -5,6 +5,12 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -88,9 +94,33 @@ class MainActivity : AppCompatActivity() {
                                 )
                             }
                         },
-                        //transitionSpec = { slideInHorizontally(initialOffsetX = { it }) togetherWith slideOutHorizontally(targetOffsetX = { -it }) },
-                        //popTransitionSpec = { slideInHorizontally(initialOffsetX = { -it }) togetherWith slideOutHorizontally(targetOffsetX = { it }) },
-                        //predictivePopTransitionSpec = { slideInHorizontally(initialOffsetX = { -it }) togetherWith slideOutHorizontally(targetOffsetX = { it }) },
+                        transitionSpec = {
+                            slideInHorizontally(
+                                animationSpec = tween(1000),
+                                initialOffsetX = { it }
+                            ) togetherWith slideOutHorizontally(
+                                animationSpec = tween(1000),
+                                targetOffsetX = { -it }
+                            )
+                        },
+                        popTransitionSpec = {
+                            fadeIn(tween(1000)) + slideInHorizontally(
+                                animationSpec = tween(1000),
+                                initialOffsetX = { -it }
+                            ) togetherWith slideOutHorizontally(
+                                animationSpec = tween(1000),
+                                targetOffsetX = { it }
+                            ) + fadeOut(tween(1000))
+                        },
+                        predictivePopTransitionSpec = {
+                            slideInHorizontally(
+                                animationSpec = tween(1000),
+                                initialOffsetX = { -it }
+                            ) togetherWith slideOutHorizontally(
+                                animationSpec = tween(1000),
+                                targetOffsetX = { it }
+                            )
+                        },
                     )
                 }
             }
