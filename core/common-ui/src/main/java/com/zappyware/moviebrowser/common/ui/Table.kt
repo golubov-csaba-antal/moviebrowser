@@ -30,17 +30,17 @@ fun Table(
     val tableBackgroundColor = if (isSystemInDarkTheme()) {
         Color(0x80151515)
     } else {
-        Color(0x80FAFAFA)
+        Color(0x80EAEAEA)
     }
     val tableBorderColor = if (isSystemInDarkTheme()) {
         Color(0xF02A2A2A)
     } else {
-        Color(0xF0F6F6F6)
+        Color(0xD5D5D5D5)
     }
     val tableDividerColor = if (isSystemInDarkTheme()) {
         Color(0xF03F3F3F)
     } else {
-        Color(0xF0F1F1F1)
+        Color(0xF0C0C0C0)
     }
 
     Row(

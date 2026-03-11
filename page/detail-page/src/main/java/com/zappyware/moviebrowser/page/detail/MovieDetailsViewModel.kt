@@ -27,7 +27,7 @@ class MovieDetailsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val widget = moviesRepository.fetchDetailWidget(contentId, mediaType)
             widget?.let {
-                _pageWidget.emit(it as PageWidget)
+                _pageWidget.emit(it)
             }
             _isFavorite.emit(moviesRepository.getIsFavoriteMovieById(contentId))
         }

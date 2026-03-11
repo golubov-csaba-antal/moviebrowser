@@ -22,7 +22,7 @@ data class TmdbSeason(
     @SerializedName("season_number")
     val seasonNumber: Int,
     @SerializedName("vote_average")
-    val voteAverage: Float,
+    val voteAverage: Float?,
 )
 
 fun TmdbSeason.toSeasonWidget(): SeasonWidget =

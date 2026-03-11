@@ -11,7 +11,7 @@ import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
 fun Seasons(
     pageWidget: DetailPageWidget?,
 ) {
-    if (pageWidget == null) return
+    if (null == pageWidget) return
 
     val tray = remember(pageWidget.seasons) {
         if (pageWidget.seasons.isEmpty()) {

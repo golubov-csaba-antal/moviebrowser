@@ -21,7 +21,7 @@ fun MovieDetailsScreenUIPreview() {
             created = emptyList(),
             episodeRunTime = emptyList(),
             firstAirDate = null,
-            genreIds = listOf("Action", "Adventure", "Sci-Fi"),
+            genres = "Action, Adventure & Sci-Fi",
             homepage = "",
             id = "123",
             isInProduction = false,

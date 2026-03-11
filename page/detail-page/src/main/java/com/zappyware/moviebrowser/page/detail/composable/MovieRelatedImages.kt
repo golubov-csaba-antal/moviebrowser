@@ -11,7 +11,7 @@ import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
 fun MovieRelatedImages(
     pageWidget: DetailPageWidget?,
 ) {
-    if (pageWidget == null) return
+    if (null == pageWidget) return
 
     val tray = remember(pageWidget.images) {
         val filteredImages = pageWidget.images.filter { it.category == "posters" }

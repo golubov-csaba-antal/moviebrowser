@@ -36,10 +36,12 @@ import com.zappyware.moviebrowser.common.ui.shimmer
 import com.zappyware.moviebrowser.data.MediaType
 import com.zappyware.moviebrowser.data.page.DetailPageWidget
 import com.zappyware.moviebrowser.page.detail.composable.MovieCreator
+import com.zappyware.moviebrowser.page.detail.composable.MovieGenre
 import com.zappyware.moviebrowser.page.detail.composable.MovieMeta
 import com.zappyware.moviebrowser.page.detail.composable.MovieOverview
 import com.zappyware.moviebrowser.page.detail.composable.MovieRelatedImages
 import com.zappyware.moviebrowser.page.detail.composable.MovieRelatedVideos
+import com.zappyware.moviebrowser.page.detail.composable.MovieTagline
 import com.zappyware.moviebrowser.page.detail.composable.MovieTitle
 import com.zappyware.moviebrowser.page.detail.composable.Seasons
 
@@ -128,6 +130,14 @@ fun MovieDetailsScreenUI(
                         pageWidget = pageWidget,
                         isFavorite = isFavoriteState,
                         onFavoriteClicked = onFavoriteClicked,
+                        horizontalPadding = innerHorizontalPadding
+                    )
+                    MovieGenre(
+                        pageWidget = pageWidget,
+                        horizontalPadding = innerHorizontalPadding
+                    )
+                    MovieTagline(
+                        pageWidget = pageWidget,
                         horizontalPadding = innerHorizontalPadding
                     )
                     MovieOverview(

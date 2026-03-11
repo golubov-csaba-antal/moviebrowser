@@ -10,17 +10,17 @@ import androidx.compose.ui.unit.dp
 import com.zappyware.moviebrowser.data.page.DetailPageWidget
 
 @Composable
-fun MovieOverview(
+fun MovieGenre(
     pageWidget: DetailPageWidget?,
     horizontalPadding: Dp = 16.dp,
 ) {
     pageWidget?.run {
-        overview.takeIf { it.isNotEmpty() }?.let { overview ->
+        genres.takeIf { it.isNotEmpty() }?.let { genres ->
             Text(
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = horizontalPadding),
-                text = overview,
-                style = MaterialTheme.typography.bodyLarge,
+                text = genres,
+                style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurface,
             )
         }

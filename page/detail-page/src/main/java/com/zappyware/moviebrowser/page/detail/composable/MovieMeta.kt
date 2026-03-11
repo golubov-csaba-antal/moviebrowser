@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.zappyware.moviebrowser.common.ui.StringFormatter
 import com.zappyware.moviebrowser.common.ui.Table
 import com.zappyware.moviebrowser.data.page.DetailPageWidget
 import java.text.SimpleDateFormat
@@ -17,58 +18,58 @@ fun MovieMeta(
     pageWidget: DetailPageWidget?,
     horizontalPadding: Dp = 16.dp,
 ) {
-    pageWidget?.let { widget ->
-        val (headers, values) = remember(widget) {
+    pageWidget?.run {
+        val (headers, values) = remember(this) {
             val h = mutableListOf<String>()
             val v = mutableListOf<String>()
-            val dateFormat = SimpleDateFormat("yyyy. MMM. dd.", Locale.getDefault())
 
-            widget.status
-                .takeIf { it.isNotEmpty() }
-                ?.let {
-                    h.add("Status")
-                    v.add(it)
+            fun addTableContent(header: String, value: String?) {
+                if (!value.isNullOrBlank()) {
+                    h.add(header)
+                    v.add(value)
                 }
-            widget.seasonsCount
-                ?.takeIf { it != 0 }
-                ?.let {
-                    h.add("Seasons count")
-                    v.add("$it")
-                }
-            widget.episodesCount
-                ?.takeIf { it != 0 }
-                ?.let {
-                    h.add("Episodes count")
-                    v.add("$it")
-                }
-            widget.firstAirDate
-                ?.let {
-                    h.add("First aired")
-                    v.add(dateFormat.format(it))
-                }
-            widget.lastAirDate
-                ?.let {
-                    h.add("Last aired")
-                    v.add(dateFormat.format(it))
-                }
-            widget.voteAverage
-                ?.let {
-                    h.add("Vote avg.")
-                    v.add(String.format(Locale.getDefault(), "%.1f", it))
-                }
-            widget.popularity
-                ?.let {
-                    h.add("Popularity")
-                    v.add(String.format(Locale.getDefault(), "%.0f", it))
-                }
+            }
+
+            addTableContent(
+                "Status",
+                status.takeIf { it.isNotEmpty() },
+            )
+            addTableContent(
+                "Seasons count",
+                seasonsCount.takeIf { it != 0 }?.let { "$it" }
+            )
+            addTableContent(
+                "Episodes count",
+                episodesCount.takeIf { it != 0 }?.let { "$it" }
+            )
+            addTableContent(
+                "First aired",
+                firstAirDate ?.let { DateFormat.format(it) },
+            )
+            addTableContent(
+                "Last aired",
+                lastAirDate?.let { DateFormat.format(it) },
+            )
+            addTableContent(
+                "Vote avg.",
+                voteAverage?.let { TextFormat.format(it) },
+            )
+            addTableContent(
+                "Popularity",
+                popularity?.let { TextFormat.format(it) },
+            )
             h to v
         }
 
         Table(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = horizontalPadding, vertical = 16.dp),
             headers = headers,
             values = values
         )
     }
 }
+
+private val DateFormat = SimpleDateFormat("yyyy. MMM dd.", Locale.getDefault())
+private val TextFormat = StringFormatter("%.1f", Locale.getDefault())

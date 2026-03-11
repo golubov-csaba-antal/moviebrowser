@@ -15,7 +15,7 @@ data class DetailPageWidget(
     val created: List<PeopleWidget>,
     val episodeRunTime: List<Int>,
     val firstAirDate: Date?,
-    val genreIds: List<String>?,
+    val genres: String,
     val homepage: String,
     override val id: String,
     val isInProduction: Boolean,

@@ -15,6 +15,7 @@ import com.zappyware.moviebrowser.network.tmdb.data.common.TmdbSeason
 import com.zappyware.moviebrowser.network.tmdb.data.common.toLanguage
 import com.zappyware.moviebrowser.network.tmdb.data.common.toSeasonWidget
 import com.zappyware.moviebrowser.network.tmdb.data.coverUrl
+import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbGenre
 import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbPeople
 import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbImage
 import com.zappyware.moviebrowser.network.tmdb.data.entities.TmdbMovie
@@ -42,8 +43,8 @@ data class TmdbDetailPage(
     @SerializedName("first_air_date")
     val firstAirDate: Date?,
 
-    @SerializedName("genre_ids")
-    val genreIds: List<String>?,
+    @SerializedName("genres")
+    val genres: List<TmdbGenre>?,
 
     @SerializedName("homepage")
     val homepage: String,
@@ -135,11 +136,8 @@ data class TmdbDetailPage(
     val images: List<TmdbImage>?,
 ): TmdbPage() {
 
-    override fun getGenres(): List<String>? = genreIds
-
     override fun toPageWidget(
         mediaType: MediaType,
-        genres: List<String>
     ): PageWidget =
         DetailPageWidget(
             adult = adult,
@@ -147,15 +145,15 @@ data class TmdbDetailPage(
             created = created?.map { it.toPeopleWidget() } ?: emptyList(),
             episodeRunTime = episodeRunTime ?: emptyList(),
             firstAirDate = firstAirDate,
-            genreIds = genreIds,
+            genres = genres?.map { it.name }?.joinToString(", ") { it.lowercase() }.orEmpty(),
             homepage = homepage,
             id = id,
             isInProduction = isInProduction,
             languages = languages ?: emptyList(),
             lastAirDate = lastAirDate,
-            lastEpisodeToAir = lastEpisodeToAir?.toMovie(mediaType, genres),
+            lastEpisodeToAir = lastEpisodeToAir?.toMovie(mediaType, genres?.map { it.name }.orEmpty()),
             title = title,
-            nextEpisodeToAir = nextEpisodeToAir?.toMovie(mediaType, genres),
+            nextEpisodeToAir = nextEpisodeToAir?.toMovie(mediaType, genres?.map { it.name }.orEmpty()),
             networks = emptyList(),
             episodesCount = episodesCount,
             seasonsCount = seasonsCount,

@@ -118,11 +118,8 @@ class TmdbService @Inject constructor(
 
     private suspend fun fetchPage(mediaType: MediaType, serviceCall: suspend (TmdbMediaType) -> TmdbPage): PageWidget {
         val tmdbPage = serviceCall(mediaType.toTmdbMediaType())
-        val genres = getGenres(mediaType).associateBy { it.id }
-
         return tmdbPage.toPageWidget(
             mediaType = mediaType,
-            genres = tmdbPage.getGenres().takeIf { !it.isNullOrEmpty() }?.mapNotNull { genres[it]?.title }.orEmpty()
         )
     }
 

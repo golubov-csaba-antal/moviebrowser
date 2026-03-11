@@ -11,12 +11,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -33,6 +29,7 @@ import com.zappyware.moviebrowser.navigation.Details
 import com.zappyware.moviebrowser.navigation.Landing
 import com.zappyware.moviebrowser.page.detail.MovieDetailsScreen
 import com.zappyware.moviebrowser.page.landing.LandingScreen
+import com.zappyware.moviebrowser.theme.MovieBrowserTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -51,13 +48,7 @@ class MainActivity : AppCompatActivity() {
                     Color.Transparent.value.toInt(), Color.Transparent.value.toInt()
                 )
             )
-            MaterialTheme(
-                colorScheme = if(isSystemInDarkTheme()) {
-                    darkColorScheme(onSurface = Color.White)
-                } else {
-                    lightColorScheme()
-                }
-            ) {
+            MovieBrowserTheme {
                 val backStack = remember { mutableStateListOf<Any>(Landing) }
                 Scaffold(
                     topBar = {

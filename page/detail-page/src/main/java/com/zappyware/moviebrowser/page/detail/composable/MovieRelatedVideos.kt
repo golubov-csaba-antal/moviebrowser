@@ -11,7 +11,7 @@ import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
 fun MovieRelatedVideos(
     pageWidget: DetailPageWidget?,
 ) {
-    if (pageWidget == null) return
+    if (null == pageWidget) return
 
     val tray = remember(pageWidget.videos) {
         if (pageWidget.videos.isNotEmpty()) {

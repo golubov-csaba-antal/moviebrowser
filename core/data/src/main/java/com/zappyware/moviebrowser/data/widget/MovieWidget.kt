@@ -19,6 +19,6 @@ data class MovieWidget(
     val releaseDate: Date?,
     val firstAirDate: Date?,
     val video: Boolean,
-    val voteAverage: Float,
+    val voteAverage: Float?,
     val voteCount: Int,
 ): Widget(id)

@@ -5,13 +5,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -26,7 +24,13 @@ fun MovieTitle(
     modifier: Modifier = Modifier,
     horizontalPadding: Dp = 16.dp,
 ) {
-    pageWidget?.let {
+    pageWidget?.run {
+        val drawableResource = if (isFavorite) {
+            R.drawable.ic_favorite_on
+        } else {
+            R.drawable.ic_favorite_off
+        }
+
         Row(
             modifier = modifier
                 .fillMaxWidth()
@@ -35,21 +39,17 @@ fun MovieTitle(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = pageWidget.title,
+                text = title,
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Icon(
-                painter = painterResource(id = R.drawable.ic_favorite),
+                painter = painterResource(id = drawableResource),
                 contentDescription = null,
                 modifier = Modifier.clickable {
-                    onFavoriteClicked(pageWidget.id, !isFavorite)
+                    onFavoriteClicked(id, !isFavorite)
                 },
-                tint = if (isFavorite) {
-                    Color.Red
-                } else {
-                    LocalContentColor.current
-                }
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }

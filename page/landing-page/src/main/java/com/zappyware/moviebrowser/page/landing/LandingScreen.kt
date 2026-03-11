@@ -19,15 +19,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zappyware.moviebrowser.common.ui.LocalFavoriteProvider
+import com.zappyware.moviebrowser.common.ui.LocalTrayMapper
 import com.zappyware.moviebrowser.common.ui.ShimmeringTray
-import com.zappyware.moviebrowser.common.ui.trays.HorizontalPagerTrayWidgetComposable
-import com.zappyware.moviebrowser.common.ui.trays.ShowcaseTrayWidgetComposable
-import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
-import com.zappyware.moviebrowser.data.tray.ShowcaseTrayWidget
+import com.zappyware.moviebrowser.common.ui.TrayMapper
 import com.zappyware.moviebrowser.data.widget.Widget
 
 @Composable
-fun LandingScreen(viewModel: LandingViewModel, onDetailsClicked: (Widget) -> Unit) {
+fun LandingScreen(
+    viewModel: LandingViewModel,
+    onDetailsClicked: (Widget) -> Unit,
+    trayMapper: TrayMapper = LocalTrayMapper.current
+) {
     val trays by viewModel.trays.collectAsStateWithLifecycle(emptyList())
 
     LaunchedEffect(Unit) {
@@ -38,7 +40,7 @@ fun LandingScreen(viewModel: LandingViewModel, onDetailsClicked: (Widget) -> Uni
     val snappingLayout = remember(lazyState) { SnapLayoutInfoProvider(lazyState, SnapPosition.Start) }
     val flingBehavior = rememberSnapFlingBehavior(snappingLayout)
 
-    if(trays.isEmpty()) {
+    if (trays.isEmpty()) {
         Column(
             modifier = Modifier.padding(top = 16.dp)
         ) {
@@ -54,21 +56,8 @@ fun LandingScreen(viewModel: LandingViewModel, onDetailsClicked: (Widget) -> Uni
                 contentPadding = PaddingValues(0.dp, vertical = 16.dp),
                 flingBehavior = flingBehavior,
             ) {
-                items(items = trays, key = { item -> item.id } ) { trayWidget ->
-                    when(trayWidget) {
-                        is HorizontalPagerTrayWidget -> {
-                            HorizontalPagerTrayWidgetComposable(
-                                tray = trayWidget,
-                                onDetailsClicked = onDetailsClicked,
-                            )
-                        }
-                        is ShowcaseTrayWidget -> {
-                            ShowcaseTrayWidgetComposable(
-                                tray = trayWidget,
-                                onDetailsClicked = onDetailsClicked,
-                            )
-                        }
-                    }
+                items(items = trays, key = { item -> item.id }) { trayWidget ->
+                    trayMapper.Map(trayWidget, onDetailsClicked)
                 }
             }
         }

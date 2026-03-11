@@ -1,6 +1,5 @@
 package com.zappyware.moviebrowser.common.ui.trays
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,55 +8,31 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.dropShadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.shadow.Shadow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
-import com.zappyware.moviebrowser.common.ui.widgets.ImageWidgetComposable
-import com.zappyware.moviebrowser.common.ui.widgets.MovieWidgetCircularComposable
-import com.zappyware.moviebrowser.common.ui.widgets.MovieWidgetLandscapeComposable
-import com.zappyware.moviebrowser.common.ui.widgets.MovieWidgetPortraitComposable
-import com.zappyware.moviebrowser.common.ui.widgets.PeopleWidgetComposable
-import com.zappyware.moviebrowser.common.ui.widgets.SeasonWidgetComposable
-import com.zappyware.moviebrowser.common.ui.widgets.VideoWidgetComposable
-import com.zappyware.moviebrowser.data.common.Orientation
+import com.zappyware.moviebrowser.common.ui.LocalWidgetMapper
+import com.zappyware.moviebrowser.common.ui.WidgetMapper
+import com.zappyware.moviebrowser.common.ui.graphicsLayer
 import com.zappyware.moviebrowser.data.tray.HorizontalPagerTrayWidget
 import com.zappyware.moviebrowser.data.tray.trayItemHeight
 import com.zappyware.moviebrowser.data.tray.trayItemWidth
-import com.zappyware.moviebrowser.data.widget.ImageWidget
-import com.zappyware.moviebrowser.data.widget.MovieWidget
-import com.zappyware.moviebrowser.data.widget.PeopleWidget
-import com.zappyware.moviebrowser.data.widget.SeasonWidget
-import com.zappyware.moviebrowser.data.widget.VideoWidget
 import com.zappyware.moviebrowser.data.widget.Widget
-import kotlin.math.absoluteValue
 
 @Composable
 fun HorizontalPagerTrayWidgetComposable(
     tray: HorizontalPagerTrayWidget,
     onDetailsClicked: (Widget) -> Unit,
+    widgetMapper: WidgetMapper = LocalWidgetMapper.current,
 ) {
     val onDetailsClickedCallback = remember(onDetailsClicked) {
         { widget: Widget ->
             onDetailsClicked(widget)
         }
-    }
-
-    val shadowColor = if (isSystemInDarkTheme()) {
-        Color.Black
-    } else {
-        Color.DarkGray
     }
 
     val pagerState = rememberPagerState(pageCount = { tray.widgets.size })
@@ -83,108 +58,15 @@ fun HorizontalPagerTrayWidgetComposable(
             pageSize = PageSize.Fixed(trayItemWidth.dp),
             key = { index -> tray.widgets[index].id }
         ) { pageIndex ->
-            when (val widget = tray.widgets[pageIndex]) {
-                is MovieWidget -> {
-                    when (tray.orientation) {
-                        Orientation.Portrait -> {
-                            MovieWidgetPortraitComposable(
-                                modifier = Modifier
-                                    .size(trayItemWidth.dp, trayItemHeight.dp)
-                                    .graphicsLayer(pagerState, pageIndex, trayItemHeight)
-                                    .dropShadow(shadowColor, 24.dp, 16.dp),
-                                widget = widget,
-                                onDetailsClickedCallback,
-                            )
-                        }
-                        Orientation.Landscape -> {
-                            MovieWidgetLandscapeComposable(
-                                modifier = Modifier
-                                    .size(trayItemWidth.dp, trayItemHeight.dp)
-                                    .graphicsLayer(pagerState, pageIndex, trayItemHeight)
-                                    .dropShadow(shadowColor, 24.dp, 16.dp),
-                                widget = widget,
-                                onDetailsClickedCallback,
-                            )
-                        }
-                        Orientation.Circular -> {
-                            MovieWidgetCircularComposable(
-                                modifier = Modifier
-                                    .size(trayItemWidth.dp, trayItemHeight.dp)
-                                    .graphicsLayer(pagerState, pageIndex, trayItemHeight)
-                                    .dropShadow(shadowColor, 24.dp, 16.dp),
-                                widget = widget,
-                                onDetailsClickedCallback,
-                            )
-                        }
-                    }
-                }
-                is PeopleWidget -> {
-                    PeopleWidgetComposable(
-                        modifier = Modifier
-                            .size(trayItemWidth.dp, trayItemHeight.dp)
-                            .graphicsLayer(pagerState, pageIndex, trayItemHeight),
-                        widget = widget,
-                        onDetailsClickedCallback,
-                    )
-                }
-                is VideoWidget -> {
-                    VideoWidgetComposable(
-                        modifier = Modifier
-                            .size(trayItemWidth.dp, trayItemHeight.dp)
-                            .graphicsLayer(pagerState, pageIndex, trayItemHeight)
-                            .dropShadow(shadowColor, 24.dp, 16.dp),
-                        widget = widget,
-                        onDetailsClickedCallback,
-                    )
-                }
-                is ImageWidget -> {
-                    ImageWidgetComposable(
-                        modifier = Modifier
-                            .size(trayItemWidth.dp, trayItemHeight.dp)
-                            .graphicsLayer(pagerState, pageIndex, trayItemHeight)
-                            .dropShadow(shadowColor, 24.dp, 16.dp),
-                        widget = widget,
-                        onDetailsClickedCallback,
-                    )
-                }
-                is SeasonWidget -> {
-                    SeasonWidgetComposable(
-                        modifier = Modifier
-                            .size(trayItemWidth.dp, trayItemHeight.dp)
-                            .graphicsLayer(pagerState, pageIndex, trayItemHeight)
-                            .dropShadow(shadowColor, 24.dp, 16.dp),
-                        widget = widget,
-                        onDetailsClickedCallback,
-                    )
-                }
-            }
+            val widget = tray.widgets[pageIndex]
+            widgetMapper.Map(
+                widget = widget,
+                orientation = tray.orientation,
+                onDetailsClicked = onDetailsClickedCallback,
+                modifier = Modifier
+                    .size(trayItemWidth.dp, trayItemHeight.dp)
+                    .graphicsLayer(pagerState, pageIndex, trayItemHeight)
+            )
         }
     }
 }
-
-fun Modifier.graphicsLayer(
-    pagerState: PagerState,
-    pageIndex: Int,
-    pageHeight: Float,
-): Modifier =
-    graphicsLayer {
-        val pageOffset =
-            ((pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction).absoluteValue
-        val scale = lerp(
-            start = 0.94f,
-            stop = 1f,
-            fraction = 1f - pageOffset.coerceIn(0f, 1f)
-        )
-        scaleX = scale
-        scaleY = scale
-        translationY = (1f - scaleY) * -pageHeight
-    }
-
-fun Modifier.dropShadow(shadowColor: Color, shapeRadius: Dp, shadowRadius: Dp): Modifier =
-    dropShadow(
-        shape = RoundedCornerShape(shapeRadius),
-        shadow = Shadow(
-            radius = shadowRadius,
-            color = shadowColor
-        ),
-    )
