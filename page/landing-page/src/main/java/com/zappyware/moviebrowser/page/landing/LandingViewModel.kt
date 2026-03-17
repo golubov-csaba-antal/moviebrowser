@@ -6,7 +6,6 @@ import com.zappyware.moviebrowser.common.ui.FavoriteProvider
 import com.zappyware.moviebrowser.data.tray.TrayWidget
 import com.zappyware.moviebrowser.repository.IMoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,7 +21,7 @@ class LandingViewModel @Inject constructor(
     )
 
     fun fetchLandingTrays() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             trays.emit(
                 moviesRepository.fetchLandingTrays()
             )

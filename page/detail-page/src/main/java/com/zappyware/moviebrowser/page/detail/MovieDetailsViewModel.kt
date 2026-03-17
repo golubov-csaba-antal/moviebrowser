@@ -6,7 +6,6 @@ import com.zappyware.moviebrowser.data.MediaType
 import com.zappyware.moviebrowser.data.page.PageWidget
 import com.zappyware.moviebrowser.repository.IMoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,7 +23,7 @@ class MovieDetailsViewModel @Inject constructor(
     val isFavorite: StateFlow<Boolean> get() = _isFavorite
 
     fun fetchDetailWidget(contentId: String, mediaType: MediaType) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val widget = moviesRepository.fetchDetailWidget(contentId, mediaType)
             widget?.let {
                 _pageWidget.emit(it)
@@ -34,7 +33,7 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     fun onFavoriteClicked(movieId: String, isFavorite: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             moviesRepository.changeFavorite(movieId, isFavorite)
             _isFavorite.emit(isFavorite)
         }

@@ -11,7 +11,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
 @Composable
@@ -25,7 +24,7 @@ fun FavoriteIcon(
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(contentId) {
-        isFavorite = scope.async(Dispatchers.IO) {
+        isFavorite = scope.async {
             favoriteProvider.isFavorite(contentId)
         }.await()
     }
