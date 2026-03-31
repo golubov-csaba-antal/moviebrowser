@@ -1,29 +1,19 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.jetbrains.kotlin.serialization)
+    id("com.android.library")
     id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    namespace = "com.zappyware.moviebrowser"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    // Aligned with the source project's namespace
+    namespace = "com.zappyware.moviebrowser.core.uikit"
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.zappyware.moviebrowser"
         minSdk = 28
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField(type = "String", name = "API_KEY", value = "\"ca510ea19628472479576813e59b1b7d\"")
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -36,15 +26,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
@@ -108,7 +91,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    implementation(projects.uikit)
-    implementation(projects.page.landingPage)
-    implementation(projects.page.detailPage)
+    // This is the standard way to include a local AAR
+    api(files("libs/uikit-debug.aar"))
 }

@@ -15,7 +15,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
-import com.zappyware.moviebrowser.common.ui.R
+import com.zappyware.moviebrowser.uikit.R
 
 @Composable
 fun Toolbar(

@@ -27,7 +27,7 @@ import com.zappyware.moviebrowser.composable.Toolbar
 import com.zappyware.moviebrowser.data.widget.MovieWidget
 import com.zappyware.moviebrowser.navigation.Details
 import com.zappyware.moviebrowser.navigation.Landing
-import com.zappyware.moviebrowser.page.detail.MovieDetailsScreen
+import com.zappyware.moviebrowser.page.detail.DetailsScreen
 import com.zappyware.moviebrowser.page.landing.LandingScreen
 import com.zappyware.moviebrowser.theme.MovieBrowserTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                                 )
                             }
                             entry<Details> {
-                                MovieDetailsScreen(
+                                DetailsScreen(
                                     viewModel = hiltViewModel(),
                                     movieId = it.contentId,
                                     mediaType = it.mediaType,

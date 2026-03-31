@@ -27,6 +27,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -58,8 +59,5 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(projects.core.data)
-    implementation(projects.core.commonUi)
-    implementation(projects.core.backend)
-    implementation(projects.core.repository)
+    implementation(projects.uikit)
 }

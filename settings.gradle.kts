@@ -28,12 +28,8 @@ rootProject.name = "moviebrowser"
 // App
 include(":app")
 
-// Core
-include(":core:data")
-include(":core:database")
-include(":core:backend")
-include(":core:common-ui")
-include(":core:repository")
+// UI Kit
+include(":uikit")
 
 // Pages
 include(":page:landing-page")
